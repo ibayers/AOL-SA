@@ -1,6 +1,3 @@
-/// Domain models for the Smart Money app.
-/// Each model includes fromJson/toJson for seamless serialization.
-
 class TransactionModel {
   final String id;
   final String userId;
@@ -13,7 +10,6 @@ class TransactionModel {
   final String? feeling; // 'happy' | 'neutral' | 'regret'
   final DateTime? createdAt;
 
-  // Joined fields (populated from query JOINs, not stored in DB)
   final String? categoryName;
   final String? categoryIcon;
   final String? paymentMethodName;
@@ -105,11 +101,7 @@ class CategoryModel {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'icon': icon,
-      'type': type,
-    };
+    return {'name': name, 'icon': icon, 'type': type};
   }
 }
 
@@ -138,9 +130,7 @@ class PaymentMethodModel {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-    };
+    return {'name': name};
   }
 }
 
@@ -149,7 +139,7 @@ class WishlistItemModel {
   final String userId;
   final String name;
   final double price;
-  final String status; // 'pending' | 'completed'
+  final String status;
   final String? imagePath;
   final DateTime? createdAt;
 
@@ -182,11 +172,7 @@ class WishlistItemModel {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'price': price,
-      'status': status,
-    };
+    return {'name': name, 'price': price, 'status': status};
   }
 }
 

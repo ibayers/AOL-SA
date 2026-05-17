@@ -18,7 +18,7 @@ class AddTransactionScreen extends ConsumerStatefulWidget {
 
 class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
   bool _isIncome = false;
-  int _selectedFeeling = 1; // 0=Good, 1=Neutral, 2=Regret
+  int _selectedFeeling = 1;
   final _amountController = TextEditingController();
   final _noteController = TextEditingController();
   DateTime _selectedDate = DateTime.now();
@@ -29,7 +29,6 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
   @override
   void initState() {
     super.initState();
-    // Restore last-used payment method
     _selectedMethod = ref.read(lastUsedPaymentMethodProvider);
   }
 
@@ -77,13 +76,12 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
             MaterialPageRoute(builder: (context) => const HomeScreen()),
           );
         }
-        return; // User cancelled or dismissed
+        return;
       }
     }
 
     setState(() => _isSaving = true);
     try {
-      // For income, find or use the "Salary" category automatically
       String? categoryId = _selectedCategory?.id;
       if (_isIncome && categoryId == null) {
         final categories = ref.read(categoryListProvider).value ?? [];
@@ -109,7 +107,6 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
       );
       await ref.read(transactionListProvider.notifier).add(txn);
 
-      // Remember last-used payment method
       if (_selectedMethod != null) {
         ref.read(lastUsedPaymentMethodProvider.notifier).set(_selectedMethod);
       }
@@ -181,7 +178,6 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
                         _buildQuickAmounts(),
                       ],
                       const SizedBox(height: 32),
-                      // For income, hide category picker (auto-salary)
                       if (_isIncome)
                         _buildMethodOnly(methodsAsync)
                       else
@@ -514,7 +510,6 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
     );
   }
 
-  /// Income mode: only shows payment method (no category — auto-salary)
   Widget _buildMethodOnly(AsyncValue<List<PaymentMethodModel>> methodsAsync) {
     return GestureDetector(
       onTap: () => _showMethodPicker(methodsAsync),
@@ -578,7 +573,6 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
     );
   }
 
-  /// Expense mode: category + payment method side by side
   Widget _buildCategoryMethodGrid(
     AsyncValue<List<CategoryModel>> categoriesAsync,
     AsyncValue<List<PaymentMethodModel>> methodsAsync,
@@ -661,7 +655,6 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
 
   void _showCategoryPicker(AsyncValue<List<CategoryModel>> categoriesAsync) {
     final categories = categoriesAsync.value ?? [];
-    // Only show expense categories
     final expenseCategories = categories
         .where((c) => c.type == 'expense' || c.type == null)
         .toList();

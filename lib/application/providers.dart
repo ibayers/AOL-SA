@@ -4,11 +4,9 @@ import '../data/repositories/repository_impl.dart';
 import '../domain/models/models.dart';
 import '../domain/repositories/repositories.dart';
 
-// ============================================================================
-// Quick Amounts Provider
-// ============================================================================
-
-final quickAmountsProvider = NotifierProvider<QuickAmountsNotifier, List<int>>(QuickAmountsNotifier.new);
+final quickAmountsProvider = NotifierProvider<QuickAmountsNotifier, List<int>>(
+  QuickAmountsNotifier.new,
+);
 
 class QuickAmountsNotifier extends Notifier<List<int>> {
   static const _key = 'quick_amounts';
@@ -34,7 +32,10 @@ class QuickAmountsNotifier extends Notifier<List<int>> {
       final newState = [...state, amount]..sort();
       state = newState;
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setStringList(_key, newState.map((e) => e.toString()).toList());
+      await prefs.setStringList(
+        _key,
+        newState.map((e) => e.toString()).toList(),
+      );
     }
   }
 
@@ -46,12 +47,10 @@ class QuickAmountsNotifier extends Notifier<List<int>> {
   }
 }
 
-// ============================================================================
-// Core Providers
-// ============================================================================
-
-/// Remembers the last-used payment method across add-transaction sessions.
-final lastUsedPaymentMethodProvider = NotifierProvider<LastUsedPaymentMethodNotifier, PaymentMethodModel?>(LastUsedPaymentMethodNotifier.new);
+final lastUsedPaymentMethodProvider =
+    NotifierProvider<LastUsedPaymentMethodNotifier, PaymentMethodModel?>(
+      LastUsedPaymentMethodNotifier.new,
+    );
 
 class LastUsedPaymentMethodNotifier extends Notifier<PaymentMethodModel?> {
   @override
@@ -59,10 +58,6 @@ class LastUsedPaymentMethodNotifier extends Notifier<PaymentMethodModel?> {
 
   void set(PaymentMethodModel? method) => state = method;
 }
-
-// ============================================================================
-// Repository Providers
-// ============================================================================
 
 final transactionRepositoryProvider = Provider<TransactionRepository>((ref) {
   return TransactionRepositoryImpl();
@@ -72,7 +67,9 @@ final categoryRepositoryProvider = Provider<CategoryRepository>((ref) {
   return CategoryRepositoryImpl();
 });
 
-final paymentMethodRepositoryProvider = Provider<PaymentMethodRepository>((ref) {
+final paymentMethodRepositoryProvider = Provider<PaymentMethodRepository>((
+  ref,
+) {
   return PaymentMethodRepositoryImpl();
 });
 
@@ -84,12 +81,9 @@ final profileRepositoryProvider = Provider<ProfileRepository>((ref) {
   return ProfileRepositoryImpl();
 });
 
-// ============================================================================
-// Auth State Provider
-// ============================================================================
-
-/// Simple in-memory auth state for demo purposes.
-final isLoggedInProvider = NotifierProvider<IsLoggedInNotifier, bool>(IsLoggedInNotifier.new);
+final isLoggedInProvider = NotifierProvider<IsLoggedInNotifier, bool>(
+  IsLoggedInNotifier.new,
+);
 
 class IsLoggedInNotifier extends Notifier<bool> {
   @override
@@ -99,15 +93,10 @@ class IsLoggedInNotifier extends Notifier<bool> {
   void logout() => state = false;
 }
 
-// ============================================================================
-// Data Providers (AsyncNotifiers)
-// ============================================================================
-
-/// Manages the list of transactions.
 final transactionListProvider =
     AsyncNotifierProvider<TransactionListNotifier, List<TransactionModel>>(
-  TransactionListNotifier.new,
-);
+      TransactionListNotifier.new,
+    );
 
 class TransactionListNotifier extends AsyncNotifier<List<TransactionModel>> {
   @override
@@ -138,16 +127,15 @@ class TransactionListNotifier extends AsyncNotifier<List<TransactionModel>> {
   }
 }
 
-/// Manages the list of categories.
 final categoryListProvider =
     AsyncNotifierProvider<CategoryListNotifier, List<CategoryModel>>(
-  CategoryListNotifier.new,
-);
+      CategoryListNotifier.new,
+    );
 
 class CategoryListNotifier extends AsyncNotifier<List<CategoryModel>> {
   @override
   Future<List<CategoryModel>> build() async {
-    ref.keepAlive(); // Categories rarely change
+    ref.keepAlive();
     final repo = ref.watch(categoryRepositoryProvider);
     return repo.getCategories();
   }
@@ -167,16 +155,16 @@ class CategoryListNotifier extends AsyncNotifier<List<CategoryModel>> {
   }
 }
 
-/// Manages the list of payment methods.
 final paymentMethodListProvider =
     AsyncNotifierProvider<PaymentMethodListNotifier, List<PaymentMethodModel>>(
-  PaymentMethodListNotifier.new,
-);
+      PaymentMethodListNotifier.new,
+    );
 
-class PaymentMethodListNotifier extends AsyncNotifier<List<PaymentMethodModel>> {
+class PaymentMethodListNotifier
+    extends AsyncNotifier<List<PaymentMethodModel>> {
   @override
   Future<List<PaymentMethodModel>> build() async {
-    ref.keepAlive(); // Payment methods rarely change
+    ref.keepAlive();
     final repo = ref.watch(paymentMethodRepositoryProvider);
     return repo.getPaymentMethods();
   }
@@ -196,11 +184,10 @@ class PaymentMethodListNotifier extends AsyncNotifier<List<PaymentMethodModel>> 
   }
 }
 
-/// Manages the wishlist.
 final wishlistProvider =
     AsyncNotifierProvider<WishlistNotifier, List<WishlistItemModel>>(
-  WishlistNotifier.new,
-);
+      WishlistNotifier.new,
+    );
 
 class WishlistNotifier extends AsyncNotifier<List<WishlistItemModel>> {
   @override
@@ -231,9 +218,7 @@ class WishlistNotifier extends AsyncNotifier<List<WishlistItemModel>> {
   }
 }
 
-/// Manages the user profile.
-final profileProvider =
-    AsyncNotifierProvider<ProfileNotifier, ProfileModel>(
+final profileProvider = AsyncNotifierProvider<ProfileNotifier, ProfileModel>(
   ProfileNotifier.new,
 );
 
@@ -255,7 +240,6 @@ class ProfileNotifier extends AsyncNotifier<ProfileModel> {
     final repo = ref.read(profileRepositoryProvider);
     final avatarUrl = await repo.uploadAvatar(file, fileName);
 
-    // Update profile with new avatar URL
     final currentProfile = await future;
     final updatedProfile = ProfileModel(
       id: currentProfile.id,

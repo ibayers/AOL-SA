@@ -1,10 +1,10 @@
 import '../models/models.dart';
 
-/// Abstract repository interfaces for Clean Architecture.
-/// These define the contracts that datasource implementations must fulfill.
-
 abstract class TransactionRepository {
-  Future<List<TransactionModel>> getTransactions({DateTime? from, DateTime? to});
+  Future<List<TransactionModel>> getTransactions({
+    DateTime? from,
+    DateTime? to,
+  });
   Future<TransactionModel> addTransaction(TransactionModel txn);
   Future<void> updateTransaction(TransactionModel txn);
   Future<void> deleteTransaction(String id);
