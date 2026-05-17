@@ -6,6 +6,7 @@ import 'package:smart_money/core/theme/app_colors.dart';
 import 'package:smart_money/core/theme/app_text_styles.dart';
 import 'package:smart_money/core/utils/formatters.dart';
 import 'package:smart_money/domain/models/models.dart';
+import 'package:smart_money/domain/utils/period_filters.dart';
 
 class ReportScreen extends ConsumerStatefulWidget {
   const ReportScreen({super.key});
@@ -17,9 +18,12 @@ class ReportScreen extends ConsumerStatefulWidget {
 class _ReportScreenState extends ConsumerState<ReportScreen> {
   int _currentTab = 0; // 0 = Summary, 1 = History
   int _timeFilter = 1; // 0 = Week, 1 = Month, 2 = Year
+  int _periodFilter = 1; // 0 = Daily, 1 = Weekly, 2 = Monthly
   final _searchController = TextEditingController();
   String _searchQuery = '';
   String? _selectedFeelingFilter;
+
+  Period get _selectedPeriod => [Period.daily, Period.weekly, Period.monthly][_periodFilter];
 
   @override
   void initState() {
@@ -76,15 +80,15 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error: (e, _) => Center(child: Text('Error: $e')),
                 data: (allTransactions) {
-                  // Filter transactions by selected time range
-                  final transactions = allTransactions
-                      .where((t) => t.date.isAfter(_filterStart))
-                      .toList();
+                  // Filter by selected period
+                  final transactions = filterTransactionsByPeriod(allTransactions, _selectedPeriod);
 
                   return ListView(
                     padding: const EdgeInsets.fromLTRB(24, 8, 24, 120),
                     children: [
                       _buildSegmentedControl(),
+                      const SizedBox(height: 16),
+                      _buildPeriodSelector(),
                       const SizedBox(height: 24),
                       if (_currentTab == 0) _buildSummaryTab(transactions),
                       if (_currentTab == 1) _buildHistoryTab(transactions),
@@ -192,6 +196,39 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildPeriodSelector() {
+    return Row(
+      children: [
+        ...['Daily', 'Weekly', 'Monthly'].asMap().entries.map((entry) {
+          final i = entry.key;
+          final label = entry.value;
+          final isSelected = _periodFilter == i;
+          return Expanded(
+            child: GestureDetector(
+              onTap: () => setState(() => _periodFilter = i),
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                decoration: BoxDecoration(
+                  color: isSelected ? AppColors.primary : AppColors.surfaceContainerLow,
+                  borderRadius: BorderRadius.circular(100),
+                ),
+                child: Center(
+                  child: Text(
+                    label,
+                    style: AppTextStyles.labelSmall.copyWith(
+                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                      color: isSelected ? AppColors.onPrimary : AppColors.onSurfaceVariant,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        }).toList(),
+      ].expand((w) => [w, const SizedBox(width: 8)]).toList()..removeLast(),
     );
   }
 

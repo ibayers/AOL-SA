@@ -5,6 +5,7 @@ import 'package:smart_money/core/theme/app_colors.dart';
 import 'package:smart_money/core/theme/app_text_styles.dart';
 import 'package:smart_money/core/utils/formatters.dart';
 import 'package:smart_money/domain/models/models.dart';
+import 'package:smart_money/domain/utils/period_filters.dart';
 import 'package:smart_money/presentation/app_shell.dart';
 
 /// Aggregated spending data per category, used by the home screen summary.
@@ -22,8 +23,19 @@ class _CategorySummary {
   });
 }
 
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  int _selectedPeriodIndex = 1; // 0=daily, 1=weekly, 2=monthly
+
+  Period get _selectedPeriod => [Period.daily, Period.weekly, Period.monthly][_selectedPeriodIndex];
+
+  String get _periodLabel => ['Daily', 'Weekly', 'Monthly'][_selectedPeriodIndex];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -42,10 +54,13 @@ class HomeScreen extends ConsumerWidget {
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error: (e, _) => Center(child: Text('Error: $e')),
                 data: (transactions) {
-                  final totalIncome = transactions
+                  // Filter by selected period
+                  final filteredTransactions = filterTransactionsByPeriod(transactions, _selectedPeriod);
+                  
+                  final totalIncome = filteredTransactions
                       .where((t) => t.isIncome)
                       .fold(0.0, (sum, t) => sum + t.amount);
-                  final totalExpense = transactions
+                  final totalExpense = filteredTransactions
                       .where((t) => t.isExpense)
                       .fold(0.0, (sum, t) => sum + t.amount);
                   final netBalance = totalIncome - totalExpense;
@@ -56,12 +71,14 @@ class HomeScreen extends ConsumerWidget {
                   final catAmounts = <String, double>{};
                   final catIcons = <String, String>{};
                   final catCounts = <String, int>{};
-                  for (final t in transactions.where((t) => t.isExpense)) {
+                  
+                  for (final t in filteredTransactions.where((t) => t.isExpense)) {
                     final cat = t.categoryName ?? 'Unknown';
                     catAmounts[cat] = (catAmounts[cat] ?? 0) + t.amount;
                     catIcons[cat] ??= t.categoryIcon ?? '💰';
                     catCounts[cat] = (catCounts[cat] ?? 0) + 1;
                   }
+                  
                   final sortedCategories = catAmounts.keys
                       .map((cat) => _CategorySummary(
                             name: cat,
@@ -76,7 +93,9 @@ class HomeScreen extends ConsumerWidget {
                     padding: const EdgeInsets.fromLTRB(24, 16, 24, 120),
                     children: [
                       _buildGreeting(profileAsync),
-                      const SizedBox(height: 32),
+                      const SizedBox(height: 16),
+                      _buildPeriodSelector(),
+                      const SizedBox(height: 16),
                       _buildHeroCard(netBalance, totalIncome, totalExpense),
                       const SizedBox(height: 40),
                       _buildInsightToast(sortedCategories),
@@ -157,6 +176,39 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
+  Widget _buildPeriodSelector() {
+    return Row(
+      children: [
+        ...['Daily', 'Weekly', 'Monthly'].asMap().entries.map((entry) {
+          final i = entry.key;
+          final label = entry.value;
+          final isSelected = _selectedPeriodIndex == i;
+          return Expanded(
+            child: GestureDetector(
+              onTap: () => setState(() => _selectedPeriodIndex = i),
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                decoration: BoxDecoration(
+                  color: isSelected ? AppColors.primary : AppColors.surfaceContainerLow,
+                  borderRadius: BorderRadius.circular(100),
+                ),
+                child: Center(
+                  child: Text(
+                    label,
+                    style: AppTextStyles.labelMedium.copyWith(
+                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                      color: isSelected ? AppColors.onPrimary : AppColors.onSurfaceVariant,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        }).toList(),
+      ].expand((w) => [w, const SizedBox(width: 8)]).toList()..removeLast(),
+    );
+  }
+
   Widget _buildHeroCard(double netBalance, double totalIncome, double totalExpense) {
     return Container(
       padding: const EdgeInsets.all(32),
@@ -168,7 +220,7 @@ class HomeScreen extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('WEEKLY SUMMARY', style: AppTextStyles.labelMedium.copyWith(color: AppColors.onPrimaryContainer.withValues(alpha: 0.8), letterSpacing: 1.5, fontWeight: FontWeight.w600)),
+          Text('${_periodLabel.toUpperCase()} SUMMARY', style: AppTextStyles.labelMedium.copyWith(color: AppColors.onPrimaryContainer.withValues(alpha: 0.8), letterSpacing: 1.5, fontWeight: FontWeight.w600)),
           const SizedBox(height: 8),
           Text(CurrencyFormatter.format(netBalance), style: AppTextStyles.displayLarge.copyWith(color: AppColors.onPrimaryContainer)),
           const SizedBox(height: 32),
