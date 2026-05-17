@@ -51,11 +51,14 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
 
   String get _filterLabel =>
       ['This Week', 'This Month', 'This Year'][_timeFilter];
-  int get _filterDays => _timeFilter == 0
-      ? 7
-      : _timeFilter == 2
-      ? 365
-      : 30;
+
+  /// Returns the number of days actually elapsed in the current filter window.
+  /// This ensures daily average is accurate (e.g. on Jan 5, "This Month"
+  /// divides by 5, not 30).
+  int get _filterDays {
+    final elapsed = DateTime.now().difference(_filterStart).inDays;
+    return elapsed < 1 ? 1 : elapsed;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -345,9 +348,13 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
     }
 
     final topCat = sorted.isNotEmpty ? sorted.first.key : '-';
+    final topAmount = sorted.isNotEmpty ? sorted.first.value : 0.0;
     final topPct = sorted.isNotEmpty && totalExpense > 0
         ? (sorted.first.value / totalExpense * 100).round()
         : 0;
+    // Daily average: total expense divided by actual days elapsed in the
+    // selected period (not a hardcoded constant), so mid-month figures
+    // are meaningful rather than misleading.
     final avgDaily = totalExpense > 0 ? totalExpense / _filterDays : 0.0;
 
     return Column(
@@ -462,9 +469,17 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
                         fontSize: 18,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 2),
                     Text(
-                      '$topPct% of total budget',
+                      CurrencyFormatter.formatCompact(topAmount),
+                      style: AppTextStyles.titleSmall.copyWith(
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      '$topPct% of total expense',
                       style: AppTextStyles.bodySmall.copyWith(
                         fontWeight: FontWeight.w500,
                       ),
@@ -486,7 +501,7 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'AVERAGE',
+                      'DAILY AVG',
                       style: AppTextStyles.labelSmall.copyWith(
                         color: AppColors.onSurfaceVariant,
                         fontWeight: FontWeight.bold,
@@ -502,7 +517,7 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Daily Outflow',
+                      'per day · $_filterDays days',
                       style: AppTextStyles.bodySmall.copyWith(
                         fontWeight: FontWeight.w500,
                       ),

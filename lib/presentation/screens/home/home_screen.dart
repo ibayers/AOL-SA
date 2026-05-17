@@ -7,6 +7,21 @@ import 'package:smart_money/core/utils/formatters.dart';
 import 'package:smart_money/domain/models/models.dart';
 import 'package:smart_money/presentation/app_shell.dart';
 
+/// Aggregated spending data per category, used by the home screen summary.
+class _CategorySummary {
+  final String name;
+  final String icon; // emoji from transaction.categoryIcon
+  final double totalAmount;
+  final int txnCount;
+
+  const _CategorySummary({
+    required this.name,
+    required this.icon,
+    required this.totalAmount,
+    required this.txnCount,
+  });
+}
+
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
@@ -35,14 +50,27 @@ class HomeScreen extends ConsumerWidget {
                       .fold(0.0, (sum, t) => sum + t.amount);
                   final netBalance = totalIncome - totalExpense;
 
-                  // Spending by category
-                  final categorySpending = <String, double>{};
+                  // Build category summaries: aggregate amount + count + icon,
+                  // then sort descending by total spend so the heaviest
+                  // categories appear at the top.
+                  final catAmounts = <String, double>{};
+                  final catIcons = <String, String>{};
+                  final catCounts = <String, int>{};
                   for (final t in transactions.where((t) => t.isExpense)) {
                     final cat = t.categoryName ?? 'Unknown';
-                    categorySpending[cat] = (categorySpending[cat] ?? 0) + t.amount;
+                    catAmounts[cat] = (catAmounts[cat] ?? 0) + t.amount;
+                    catIcons[cat] ??= t.categoryIcon ?? '💰';
+                    catCounts[cat] = (catCounts[cat] ?? 0) + 1;
                   }
-                  final sortedCategories = categorySpending.entries.toList()
-                    ..sort((a, b) => b.value.compareTo(a.value));
+                  final sortedCategories = catAmounts.keys
+                      .map((cat) => _CategorySummary(
+                            name: cat,
+                            icon: catIcons[cat]!,
+                            totalAmount: catAmounts[cat]!,
+                            txnCount: catCounts[cat]!,
+                          ))
+                      .toList()
+                    ..sort((a, b) => b.totalAmount.compareTo(a.totalAmount));
 
                   return ListView(
                     padding: const EdgeInsets.fromLTRB(24, 16, 24, 120),
@@ -53,7 +81,7 @@ class HomeScreen extends ConsumerWidget {
                       const SizedBox(height: 40),
                       _buildInsightToast(sortedCategories),
                       const SizedBox(height: 40),
-                      _buildSpendingByCategory(sortedCategories, totalExpense, transactions),
+                      _buildSpendingByCategory(sortedCategories, totalExpense),
                     ],
                   );
                 },
@@ -179,8 +207,8 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildInsightToast(List<MapEntry<String, double>> sortedCategories) {
-    final topCategory = sortedCategories.isNotEmpty ? sortedCategories.first.key : 'spending';
+  Widget _buildInsightToast(List<_CategorySummary> sortedCategories) {
+    final topCategory = sortedCategories.isNotEmpty ? sortedCategories.first.name : 'spending';
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -211,7 +239,7 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildSpendingByCategory(List<MapEntry<String, double>> sortedCategories, double totalExpense, List<TransactionModel> transactions) {
+  Widget _buildSpendingByCategory(List<_CategorySummary> sortedCategories, double totalExpense) {
     final categoryColors = [Colors.orange, Colors.blue, Colors.purple, Colors.teal, Colors.pink, Colors.amber, Colors.red, Colors.indigo];
 
     return Column(
@@ -242,17 +270,16 @@ class HomeScreen extends ConsumerWidget {
             final i = entry.key;
             final cat = entry.value;
             final colorBase = categoryColors[i % categoryColors.length];
-            final txnCount = transactions.where((t) => t.isExpense && (t.categoryName ?? 'Unknown') == cat.key).length;
-            final progress = totalExpense > 0 ? cat.value / totalExpense : 0.0;
+            final progress = totalExpense > 0 ? cat.totalAmount / totalExpense : 0.0;
 
             return _categoryItem(
-              title: cat.key,
-              subtitle: '$txnCount Transactions',
-              amount: CurrencyFormatter.format(cat.value),
+              emoji: cat.icon,
+              title: cat.name,
+              subtitle: '${cat.txnCount} Transaction${cat.txnCount != 1 ? 's' : ''}',
+              amount: CurrencyFormatter.format(cat.totalAmount),
               progress: progress,
               progressColor: colorBase.shade400,
               iconBg: colorBase.shade100,
-              iconColor: colorBase.shade600,
             );
           }),
       ],
@@ -260,13 +287,13 @@ class HomeScreen extends ConsumerWidget {
   }
 
   Widget _categoryItem({
+    required String emoji,
     required String title,
     required String subtitle,
     required String amount,
     required double progress,
     required Color progressColor,
     required Color iconBg,
-    required Color iconColor,
   }) {
     return Container(
       margin: const EdgeInsets.only(bottom: 24),
@@ -281,7 +308,9 @@ class HomeScreen extends ConsumerWidget {
                 Container(
                   width: 40, height: 40,
                   decoration: BoxDecoration(color: iconBg, borderRadius: BorderRadius.circular(12)),
-                  child: Icon(Icons.category_rounded, color: iconColor, size: 20),
+                  child: Center(
+                    child: Text(emoji, style: const TextStyle(fontSize: 20)),
+                  ),
                 ),
                 const SizedBox(width: 12),
                 Column(
