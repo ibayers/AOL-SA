@@ -25,7 +25,6 @@ class CurrencyFormatter {
     return _compactFormatter.format(amount);
   }
 
-  /// Format with +/- prefix for income/expense
   static String formatSigned(double amount, {bool isIncome = true}) {
     final prefix = isIncome ? '+' : '-';
     return '$prefix${_formatter.format(amount.abs())}';

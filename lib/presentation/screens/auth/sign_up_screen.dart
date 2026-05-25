@@ -43,17 +43,23 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
     setState(() => _isLoading = true);
 
-    // Simulate a short delay for demo purposes
-    await Future.delayed(const Duration(milliseconds: 500));
-
-    if (mounted) {
+    try {
+      final authDataSource = ref.read(authRemoteDataSourceProvider);
+      await authDataSource.register(name, email, password);
       ref.read(isLoggedInProvider.notifier).login();
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (_) => const AppShell()),
-        (route) => false,
-      );
-      setState(() => _isLoading = false);
+      if (mounted) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (_) => const AppShell()),
+          (route) => false,
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        _showError('Registration failed. Email may already be in use.');
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -76,17 +82,27 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       body: Stack(
         children: [
           Positioned(
-            top: -50, right: -50,
+            top: -50,
+            right: -50,
             child: Container(
-              width: 300, height: 300,
-              decoration: BoxDecoration(shape: BoxShape.circle, color: AppColors.primary.withValues(alpha: 0.1)),
+              width: 300,
+              height: 300,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.primary.withValues(alpha: 0.1),
+              ),
             ),
           ),
           Positioned(
-            bottom: -50, left: -50,
+            bottom: -50,
+            left: -50,
             child: Container(
-              width: 400, height: 400,
-              decoration: BoxDecoration(shape: BoxShape.circle, color: AppColors.secondary.withValues(alpha: 0.1)),
+              width: 400,
+              height: 400,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.secondary.withValues(alpha: 0.1),
+              ),
             ),
           ),
           SafeArea(
@@ -98,16 +114,34 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
-                        width: 40, height: 40,
+                        width: 40,
+                        height: 40,
                         decoration: BoxDecoration(
                           gradient: AppColors.primaryGradient,
                           borderRadius: BorderRadius.circular(12),
-                          boxShadow: [BoxShadow(color: AppColors.primary.withValues(alpha: 0.2), blurRadius: 10, offset: const Offset(0, 4))],
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.primary.withValues(alpha: 0.2),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
                         ),
-                        child: const Icon(Icons.account_balance_wallet_rounded, color: Colors.white, size: 20),
+                        child: const Icon(
+                          Icons.account_balance_wallet_rounded,
+                          color: Colors.white,
+                          size: 20,
+                        ),
                       ),
                       const SizedBox(width: 12),
-                      Text('Smart Money', style: AppTextStyles.headlineMedium.copyWith(color: AppColors.primary, fontWeight: FontWeight.w800, fontSize: 24)),
+                      Text(
+                        'Smart Money',
+                        style: AppTextStyles.headlineMedium.copyWith(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 24,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -119,9 +153,20 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         const SizedBox(height: 24),
-                        Text('Create Account', style: AppTextStyles.headlineLarge.copyWith(fontWeight: FontWeight.w800)),
+                        Text(
+                          'Create Account',
+                          style: AppTextStyles.headlineLarge.copyWith(
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
                         const SizedBox(height: 8),
-                        Text('Start your journey to financial serenity', style: AppTextStyles.titleMedium.copyWith(color: AppColors.outline, fontWeight: FontWeight.w500)),
+                        Text(
+                          'Start your journey to financial serenity',
+                          style: AppTextStyles.titleMedium.copyWith(
+                            color: AppColors.outline,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
                         const SizedBox(height: 40),
 
                         // Form Card
@@ -130,16 +175,36 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                           decoration: BoxDecoration(
                             color: AppColors.surfaceContainerLowest,
                             borderRadius: BorderRadius.circular(32),
-                            boxShadow: [BoxShadow(color: AppColors.primary.withValues(alpha: 0.04), blurRadius: 48, offset: const Offset(0, 24))],
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.primary.withValues(
+                                  alpha: 0.04,
+                                ),
+                                blurRadius: 48,
+                                offset: const Offset(0, 24),
+                              ),
+                            ],
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              _buildInputField('Full Name', 'Enter your full name', controller: _nameController),
+                              _buildInputField(
+                                'Full Name',
+                                'Enter your full name',
+                                controller: _nameController,
+                              ),
                               const SizedBox(height: 20),
-                              _buildInputField('Email Address', 'name@example.com', controller: _emailController, keyboardType: TextInputType.emailAddress),
+                              _buildInputField(
+                                'Email Address',
+                                'name@example.com',
+                                controller: _emailController,
+                                keyboardType: TextInputType.emailAddress,
+                              ),
                               const SizedBox(height: 20),
-                              _buildPasswordField('Password', 'Min. 6 characters'),
+                              _buildPasswordField(
+                                'Password',
+                                'Min. 6 characters',
+                              ),
                               const SizedBox(height: 32),
 
                               // Create Account Button
@@ -147,22 +212,57 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                                 onTap: _isLoading ? null : _handleSignUp,
                                 child: Container(
                                   width: double.infinity,
-                                  padding: const EdgeInsets.symmetric(vertical: 16),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 16,
+                                  ),
                                   decoration: BoxDecoration(
-                                    gradient: _isLoading ? null : AppColors.primaryGradient,
-                                    color: _isLoading ? AppColors.outline.withValues(alpha: 0.3) : null,
+                                    gradient: _isLoading
+                                        ? null
+                                        : AppColors.primaryGradient,
+                                    color: _isLoading
+                                        ? AppColors.outline.withValues(
+                                            alpha: 0.3,
+                                          )
+                                        : null,
                                     borderRadius: BorderRadius.circular(100),
-                                    boxShadow: _isLoading ? null : [BoxShadow(color: AppColors.primary.withValues(alpha: 0.2), blurRadius: 16, offset: const Offset(0, 8))],
+                                    boxShadow: _isLoading
+                                        ? null
+                                        : [
+                                            BoxShadow(
+                                              color: AppColors.primary
+                                                  .withValues(alpha: 0.2),
+                                              blurRadius: 16,
+                                              offset: const Offset(0, 8),
+                                            ),
+                                          ],
                                   ),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       if (_isLoading)
-                                        const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                                        const SizedBox(
+                                          width: 20,
+                                          height: 20,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            color: Colors.white,
+                                          ),
+                                        )
                                       else ...[
-                                        Text('Create Account', style: AppTextStyles.titleMedium.copyWith(color: Colors.white, fontWeight: FontWeight.bold)),
+                                        Text(
+                                          'Create Account',
+                                          style: AppTextStyles.titleMedium
+                                              .copyWith(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                        ),
                                         const SizedBox(width: 8),
-                                        const Icon(Icons.arrow_forward_rounded, color: Colors.white, size: 20),
+                                        const Icon(
+                                          Icons.arrow_forward_rounded,
+                                          color: Colors.white,
+                                          size: 20,
+                                        ),
                                       ],
                                     ],
                                   ),
@@ -176,10 +276,22 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text("Already have an account? ", style: AppTextStyles.bodyMedium.copyWith(color: AppColors.outline, fontWeight: FontWeight.w500)),
+                            Text(
+                              "Already have an account? ",
+                              style: AppTextStyles.bodyMedium.copyWith(
+                                color: AppColors.outline,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
                             GestureDetector(
                               onTap: () => Navigator.pop(context),
-                              child: Text('Login', style: AppTextStyles.bodyMedium.copyWith(color: AppColors.primary, fontWeight: FontWeight.bold)),
+                              child: Text(
+                                'Login',
+                                style: AppTextStyles.bodyMedium.copyWith(
+                                  color: AppColors.primary,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
                           ],
                         ),
@@ -195,15 +307,47 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Container(width: 32, height: 4, decoration: BoxDecoration(color: AppColors.primary, borderRadius: BorderRadius.circular(2))),
+                          Container(
+                            width: 32,
+                            height: 4,
+                            decoration: BoxDecoration(
+                              color: AppColors.primary,
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                          ),
                           const SizedBox(width: 8),
-                          Container(width: 8, height: 4, decoration: BoxDecoration(color: AppColors.outlineVariant.withValues(alpha: 0.3), borderRadius: BorderRadius.circular(2))),
+                          Container(
+                            width: 8,
+                            height: 4,
+                            decoration: BoxDecoration(
+                              color: AppColors.outlineVariant.withValues(
+                                alpha: 0.3,
+                              ),
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                          ),
                           const SizedBox(width: 8),
-                          Container(width: 8, height: 4, decoration: BoxDecoration(color: AppColors.outlineVariant.withValues(alpha: 0.3), borderRadius: BorderRadius.circular(2))),
+                          Container(
+                            width: 8,
+                            height: 4,
+                            decoration: BoxDecoration(
+                              color: AppColors.outlineVariant.withValues(
+                                alpha: 0.3,
+                              ),
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                          ),
                         ],
                       ),
                       const SizedBox(height: 16),
-                      Text('SECURE EDITORIAL FINANCE', style: AppTextStyles.labelSmall.copyWith(color: AppColors.outline, fontWeight: FontWeight.bold, letterSpacing: 2)),
+                      Text(
+                        'SECURE EDITORIAL FINANCE',
+                        style: AppTextStyles.labelSmall.copyWith(
+                          color: AppColors.outline,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 2,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -215,25 +359,41 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     );
   }
 
-  Widget _buildInputField(String label, String hint, {TextInputType? keyboardType, required TextEditingController controller}) {
+  Widget _buildInputField(
+    String label,
+    String hint, {
+    TextInputType? keyboardType,
+    required TextEditingController controller,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
-          child: Text(label, style: AppTextStyles.labelLarge.copyWith(color: AppColors.outline)),
+          child: Text(
+            label,
+            style: AppTextStyles.labelLarge.copyWith(color: AppColors.outline),
+          ),
         ),
         Container(
-          decoration: BoxDecoration(color: AppColors.surfaceContainerLow, borderRadius: BorderRadius.circular(12)),
+          decoration: BoxDecoration(
+            color: AppColors.surfaceContainerLow,
+            borderRadius: BorderRadius.circular(12),
+          ),
           child: TextField(
             controller: controller,
             keyboardType: keyboardType,
             style: AppTextStyles.bodyLarge,
             decoration: InputDecoration(
               hintText: hint,
-              hintStyle: AppTextStyles.bodyLarge.copyWith(color: AppColors.outline.withValues(alpha: 0.5)),
+              hintStyle: AppTextStyles.bodyLarge.copyWith(
+                color: AppColors.outline.withValues(alpha: 0.5),
+              ),
               border: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 16,
+              ),
             ),
           ),
         ),
@@ -247,22 +407,39 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
-          child: Text(label, style: AppTextStyles.labelLarge.copyWith(color: AppColors.outline)),
+          child: Text(
+            label,
+            style: AppTextStyles.labelLarge.copyWith(color: AppColors.outline),
+          ),
         ),
         Container(
-          decoration: BoxDecoration(color: AppColors.surfaceContainerLow, borderRadius: BorderRadius.circular(12)),
+          decoration: BoxDecoration(
+            color: AppColors.surfaceContainerLow,
+            borderRadius: BorderRadius.circular(12),
+          ),
           child: TextField(
             controller: _passwordController,
             obscureText: _obscurePassword,
             style: AppTextStyles.bodyLarge,
             decoration: InputDecoration(
               hintText: hint,
-              hintStyle: AppTextStyles.bodyLarge.copyWith(color: AppColors.outline.withValues(alpha: 0.5)),
+              hintStyle: AppTextStyles.bodyLarge.copyWith(
+                color: AppColors.outline.withValues(alpha: 0.5),
+              ),
               border: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 16,
+              ),
               suffixIcon: GestureDetector(
-                onTap: () => setState(() => _obscurePassword = !_obscurePassword),
-                child: Icon(_obscurePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined, color: AppColors.outline),
+                onTap: () =>
+                    setState(() => _obscurePassword = !_obscurePassword),
+                child: Icon(
+                  _obscurePassword
+                      ? Icons.visibility_outlined
+                      : Icons.visibility_off_outlined,
+                  color: AppColors.outline,
+                ),
               ),
             ),
           ),

@@ -1,6 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../data/repositories/repository_impl.dart';
+import '../data/datasources/transaction_remote_data_source.dart';
+import '../data/datasources/category_remote_data_source.dart';
+import '../data/datasources/payment_method_remote_data_source.dart';
+import '../data/datasources/wishlist_remote_data_source.dart';
+import '../data/datasources/profile_remote_data_source.dart';
+import '../data/datasources/auth_remote_data_source.dart';
 import '../domain/models/models.dart';
 import '../domain/repositories/repositories.dart';
 
@@ -60,25 +66,33 @@ class LastUsedPaymentMethodNotifier extends Notifier<PaymentMethodModel?> {
 }
 
 final transactionRepositoryProvider = Provider<TransactionRepository>((ref) {
-  return TransactionRepositoryImpl();
+  return TransactionRepositoryImpl(
+    TransactionRemoteDataSource(),
+    CategoryRemoteDataSource(),
+    PaymentMethodRemoteDataSource(),
+  );
 });
 
 final categoryRepositoryProvider = Provider<CategoryRepository>((ref) {
-  return CategoryRepositoryImpl();
+  return CategoryRepositoryImpl(CategoryRemoteDataSource());
 });
 
 final paymentMethodRepositoryProvider = Provider<PaymentMethodRepository>((
   ref,
 ) {
-  return PaymentMethodRepositoryImpl();
+  return PaymentMethodRepositoryImpl(PaymentMethodRemoteDataSource());
 });
 
 final wishlistRepositoryProvider = Provider<WishlistRepository>((ref) {
-  return WishlistRepositoryImpl();
+  return WishlistRepositoryImpl(WishlistRemoteDataSource());
 });
 
 final profileRepositoryProvider = Provider<ProfileRepository>((ref) {
-  return ProfileRepositoryImpl();
+  return ProfileRepositoryImpl(ProfileRemoteDataSource());
+});
+
+final authRemoteDataSourceProvider = Provider<AuthRemoteDataSource>((ref) {
+  return AuthRemoteDataSource();
 });
 
 final isLoggedInProvider = NotifierProvider<IsLoggedInNotifier, bool>(

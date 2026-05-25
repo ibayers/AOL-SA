@@ -35,11 +35,11 @@ class HomeScreen extends ConsumerWidget {
                       .fold(0.0, (sum, t) => sum + t.amount);
                   final netBalance = totalIncome - totalExpense;
 
-                  // Spending by category
                   final categorySpending = <String, double>{};
                   for (final t in transactions.where((t) => t.isExpense)) {
                     final cat = t.categoryName ?? 'Unknown';
-                    categorySpending[cat] = (categorySpending[cat] ?? 0) + t.amount;
+                    categorySpending[cat] =
+                        (categorySpending[cat] ?? 0) + t.amount;
                   }
                   final sortedCategories = categorySpending.entries.toList()
                     ..sort((a, b) => b.value.compareTo(a.value));
@@ -53,7 +53,11 @@ class HomeScreen extends ConsumerWidget {
                       const SizedBox(height: 40),
                       _buildInsightToast(sortedCategories),
                       const SizedBox(height: 40),
-                      _buildSpendingByCategory(sortedCategories, totalExpense, transactions),
+                      _buildSpendingByCategory(
+                        sortedCategories,
+                        totalExpense,
+                        transactions,
+                      ),
                     ],
                   );
                 },
@@ -65,11 +69,18 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildTopAppBar(BuildContext context, AsyncValue<ProfileModel> profileAsync) {
+  Widget _buildTopAppBar(
+    BuildContext context,
+    AsyncValue<ProfileModel> profileAsync,
+  ) {
     final fullName = profileAsync.value?.name ?? 'Smart Money';
     final firstName = fullName.split(' ').first;
     final hour = DateTime.now().hour;
-    final greeting = hour < 12 ? 'Good morning,' : hour < 17 ? 'Good afternoon,' : 'Good evening,';
+    final greeting = hour < 12
+        ? 'Good morning,'
+        : hour < 17
+        ? 'Good afternoon,'
+        : 'Good evening,';
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -80,13 +91,15 @@ class HomeScreen extends ConsumerWidget {
             children: [
               GestureDetector(
                 onTap: () {
-                  final appShellState = context.findAncestorStateOfType<AppShellState>();
+                  final appShellState = context
+                      .findAncestorStateOfType<AppShellState>();
                   appShellState?.switchToTab(3);
                 },
                 child: Container(
-                  width: 40, height: 40,
+                  width: 40,
+                  height: 40,
                   decoration: BoxDecoration(
-                    shape: BoxShape.circle, 
+                    shape: BoxShape.circle,
                     color: AppColors.surfaceContainerHigh,
                     image: profileAsync.value?.avatarUrl != null
                         ? DecorationImage(
@@ -104,13 +117,29 @@ class HomeScreen extends ConsumerWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(greeting, style: AppTextStyles.labelMedium.copyWith(color: AppColors.outline)),
-                  Text(firstName, style: AppTextStyles.titleMedium.copyWith(color: AppColors.primary)),
+                  Text(
+                    greeting,
+                    style: AppTextStyles.labelMedium.copyWith(
+                      color: AppColors.outline,
+                    ),
+                  ),
+                  Text(
+                    firstName,
+                    style: AppTextStyles.titleMedium.copyWith(
+                      color: AppColors.primary,
+                    ),
+                  ),
                 ],
               ),
             ],
           ),
-          IconButton(onPressed: () {}, icon: const Icon(Icons.notifications_outlined, color: AppColors.primary)),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(
+              Icons.notifications_outlined,
+              color: AppColors.primary,
+            ),
+          ),
         ],
       ),
     );
@@ -122,33 +151,75 @@ class HomeScreen extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Welcome back, $firstName', style: AppTextStyles.titleLarge.copyWith(fontWeight: FontWeight.w700)),
+        Text(
+          'Welcome back, $firstName',
+          style: AppTextStyles.titleLarge.copyWith(fontWeight: FontWeight.w700),
+        ),
         const SizedBox(height: 4),
-        Text('Your finances are looking healthy today.', style: AppTextStyles.labelMedium),
+        Text(
+          'Your finances are looking healthy today.',
+          style: AppTextStyles.labelMedium,
+        ),
       ],
     );
   }
 
-  Widget _buildHeroCard(double netBalance, double totalIncome, double totalExpense) {
+  Widget _buildHeroCard(
+    double netBalance,
+    double totalIncome,
+    double totalExpense,
+  ) {
     return Container(
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
         gradient: AppColors.primaryGradient,
         borderRadius: BorderRadius.circular(32),
-        boxShadow: [BoxShadow(color: AppColors.primary.withValues(alpha: 0.2), blurRadius: 32, offset: const Offset(0, 16))],
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withValues(alpha: 0.2),
+            blurRadius: 32,
+            offset: const Offset(0, 16),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('WEEKLY SUMMARY', style: AppTextStyles.labelMedium.copyWith(color: AppColors.onPrimaryContainer.withValues(alpha: 0.8), letterSpacing: 1.5, fontWeight: FontWeight.w600)),
+          Text(
+            'WEEKLY SUMMARY',
+            style: AppTextStyles.labelMedium.copyWith(
+              color: AppColors.onPrimaryContainer.withValues(alpha: 0.8),
+              letterSpacing: 1.5,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
           const SizedBox(height: 8),
-          Text(CurrencyFormatter.format(netBalance), style: AppTextStyles.displayLarge.copyWith(color: AppColors.onPrimaryContainer)),
+          Text(
+            CurrencyFormatter.format(netBalance),
+            style: AppTextStyles.displayLarge.copyWith(
+              color: AppColors.onPrimaryContainer,
+            ),
+          ),
           const SizedBox(height: 32),
           Row(
             children: [
-              Expanded(child: _summaryBox('INCOME', CurrencyFormatter.format(totalIncome), const Color(0xFF8ff6d0), Icons.arrow_upward_rounded)),
+              Expanded(
+                child: _summaryBox(
+                  'INCOME',
+                  CurrencyFormatter.format(totalIncome),
+                  const Color(0xFF8ff6d0),
+                  Icons.arrow_upward_rounded,
+                ),
+              ),
               const SizedBox(width: 16),
-              Expanded(child: _summaryBox('EXPENSE', CurrencyFormatter.format(totalExpense), const Color(0xFFffb4ac), Icons.arrow_downward_rounded)),
+              Expanded(
+                child: _summaryBox(
+                  'EXPENSE',
+                  CurrencyFormatter.format(totalExpense),
+                  const Color(0xFFffb4ac),
+                  Icons.arrow_downward_rounded,
+                ),
+              ),
             ],
           ),
         ],
@@ -159,20 +230,38 @@ class HomeScreen extends ConsumerWidget {
   Widget _summaryBox(String label, String amount, Color color, IconData icon) {
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(16)),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(16),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(children: [
-            Icon(icon, size: 14, color: color),
-            const SizedBox(width: 4),
-            Text(label, style: AppTextStyles.labelSmall.copyWith(color: color, fontWeight: FontWeight.bold, letterSpacing: 1)),
-          ]),
+          Row(
+            children: [
+              Icon(icon, size: 14, color: color),
+              const SizedBox(width: 4),
+              Text(
+                label,
+                style: AppTextStyles.labelSmall.copyWith(
+                  color: color,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1,
+                ),
+              ),
+            ],
+          ),
           const SizedBox(height: 4),
           FittedBox(
             fit: BoxFit.scaleDown,
             alignment: Alignment.centerLeft,
-            child: Text(amount, style: AppTextStyles.titleMedium.copyWith(color: AppColors.onPrimaryContainer, fontWeight: FontWeight.w700)),
+            child: Text(
+              amount,
+              style: AppTextStyles.titleMedium.copyWith(
+                color: AppColors.onPrimaryContainer,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
           ),
         ],
       ),
@@ -180,20 +269,34 @@ class HomeScreen extends ConsumerWidget {
   }
 
   Widget _buildInsightToast(List<MapEntry<String, double>> sortedCategories) {
-    final topCategory = sortedCategories.isNotEmpty ? sortedCategories.first.key : 'spending';
+    final topCategory = sortedCategories.isNotEmpty
+        ? sortedCategories.first.key
+        : 'spending';
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(16),
-        border: const Border(left: BorderSide(color: AppColors.secondary, width: 4)),
-        boxShadow: [BoxShadow(color: AppColors.primary.withValues(alpha: 0.06), blurRadius: 20, offset: const Offset(0, 4))],
+        border: const Border(
+          left: BorderSide(color: AppColors.secondary, width: 4),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withValues(alpha: 0.06),
+            blurRadius: 20,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Row(
         children: [
           Container(
-            width: 40, height: 40,
-            decoration: const BoxDecoration(shape: BoxShape.circle, color: AppColors.secondaryContainer),
+            width: 40,
+            height: 40,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppColors.secondaryContainer,
+            ),
             child: const Icon(Icons.stars_rounded, color: AppColors.secondary),
           ),
           const SizedBox(width: 16),
@@ -201,8 +304,18 @@ class HomeScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Smart Insight', style: AppTextStyles.titleSmall.copyWith(fontWeight: FontWeight.w600)),
-                Text('Your top spending category is $topCategory', style: AppTextStyles.bodySmall.copyWith(color: AppColors.onSurfaceVariant)),
+                Text(
+                  'Smart Insight',
+                  style: AppTextStyles.titleSmall.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                Text(
+                  'Your top spending category is $topCategory',
+                  style: AppTextStyles.bodySmall.copyWith(
+                    color: AppColors.onSurfaceVariant,
+                  ),
+                ),
               ],
             ),
           ),
@@ -211,8 +324,21 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildSpendingByCategory(List<MapEntry<String, double>> sortedCategories, double totalExpense, List<TransactionModel> transactions) {
-    final categoryColors = [Colors.orange, Colors.blue, Colors.purple, Colors.teal, Colors.pink, Colors.amber, Colors.red, Colors.indigo];
+  Widget _buildSpendingByCategory(
+    List<MapEntry<String, double>> sortedCategories,
+    double totalExpense,
+    List<TransactionModel> transactions,
+  ) {
+    final categoryColors = [
+      Colors.orange,
+      Colors.blue,
+      Colors.purple,
+      Colors.teal,
+      Colors.pink,
+      Colors.amber,
+      Colors.red,
+      Colors.indigo,
+    ];
 
     return Column(
       children: [
@@ -221,28 +347,51 @@ class HomeScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text('Spending by Category', style: AppTextStyles.headlineMedium),
-            Builder(builder: (context) => GestureDetector(
-              onTap: () {
-                final shell = context.findAncestorStateOfType<AppShellState>();
-                shell?.switchToTab(1);
-              },
-              child: Text('See All', style: AppTextStyles.labelLarge.copyWith(color: AppColors.primary)),
-            )),
+            Builder(
+              builder: (context) => GestureDetector(
+                onTap: () {
+                  final shell = context
+                      .findAncestorStateOfType<AppShellState>();
+                  shell?.switchToTab(1);
+                },
+                child: Text(
+                  'See All',
+                  style: AppTextStyles.labelLarge.copyWith(
+                    color: AppColors.primary,
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
         const SizedBox(height: 24),
         if (sortedCategories.isEmpty)
           Container(
             padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(color: AppColors.surfaceContainerLow, borderRadius: BorderRadius.circular(24)),
-            child: Center(child: Text('No expense data yet', style: AppTextStyles.bodyMedium.copyWith(color: AppColors.outline))),
+            decoration: BoxDecoration(
+              color: AppColors.surfaceContainerLow,
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: Center(
+              child: Text(
+                'No expense data yet',
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: AppColors.outline,
+                ),
+              ),
+            ),
           )
         else
           ...sortedCategories.take(5).toList().asMap().entries.map((entry) {
             final i = entry.key;
             final cat = entry.value;
             final colorBase = categoryColors[i % categoryColors.length];
-            final txnCount = transactions.where((t) => t.isExpense && (t.categoryName ?? 'Unknown') == cat.key).length;
+            final txnCount = transactions
+                .where(
+                  (t) =>
+                      t.isExpense && (t.categoryName ?? 'Unknown') == cat.key,
+                )
+                .length;
             final progress = totalExpense > 0 ? cat.value / totalExpense : 0.0;
 
             return _categoryItem(
@@ -271,34 +420,67 @@ class HomeScreen extends ConsumerWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 24),
       padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(color: AppColors.surfaceContainerLow, borderRadius: BorderRadius.circular(24)),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(24),
+      ),
       child: Column(
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(children: [
-                Container(
-                  width: 40, height: 40,
-                  decoration: BoxDecoration(color: iconBg, borderRadius: BorderRadius.circular(12)),
-                  child: Icon(Icons.category_rounded, color: iconColor, size: 20),
+              Row(
+                children: [
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: iconBg,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      Icons.category_rounded,
+                      color: iconColor,
+                      size: 20,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: AppTextStyles.titleMedium.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        subtitle,
+                        style: AppTextStyles.labelSmall.copyWith(
+                          color: AppColors.outline,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              Text(
+                amount,
+                style: AppTextStyles.titleMedium.copyWith(
+                  fontWeight: FontWeight.bold,
                 ),
-                const SizedBox(width: 12),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(title, style: AppTextStyles.titleMedium.copyWith(fontWeight: FontWeight.bold)),
-                    Text(subtitle, style: AppTextStyles.labelSmall.copyWith(color: AppColors.outline)),
-                  ],
-                ),
-              ]),
-              Text(amount, style: AppTextStyles.titleMedium.copyWith(fontWeight: FontWeight.bold)),
+              ),
             ],
           ),
           const SizedBox(height: 16),
           ClipRRect(
             borderRadius: BorderRadius.circular(4),
-            child: LinearProgressIndicator(value: progress, backgroundColor: AppColors.surfaceContainerHighest, color: progressColor, minHeight: 8),
+            child: LinearProgressIndicator(
+              value: progress,
+              backgroundColor: AppColors.surfaceContainerHighest,
+              color: progressColor,
+              minHeight: 8,
+            ),
           ),
         ],
       ),

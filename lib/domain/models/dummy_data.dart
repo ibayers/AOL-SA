@@ -1,6 +1,5 @@
 import 'models.dart';
 
-/// Dummy data for the Smart Money app
 class DummyData {
   DummyData._();
 
@@ -141,7 +140,6 @@ class DummyData {
     weeklyBudget: 1500000,
   );
 
-  // Computed
   static double get totalIncome => transactions
       .where((t) => t.isIncome)
       .fold(0.0, (sum, t) => sum + t.amount);
@@ -155,7 +153,8 @@ class DummyData {
   static Map<String, double> get expenseByCategory {
     final map = <String, double>{};
     for (final t in transactions.where((t) => t.isExpense)) {
-      map[t.categoryName ?? 'Unknown'] = (map[t.categoryName ?? 'Unknown'] ?? 0) + t.amount;
+      map[t.categoryName ?? 'Unknown'] =
+          (map[t.categoryName ?? 'Unknown'] ?? 0) + t.amount;
     }
     return map;
   }

@@ -33,13 +33,14 @@ let AuthSessionRepository = class AuthSessionRepository {
         return await this.repository.save(session);
     }
     async findActiveByTokenHash(tokenHash) {
-        return await this.repository.findOne({
-            where: {
-                tokenHash,
-                revokedAt: (0, typeorm_2.IsNull)(),
-                expiresAt: (0, typeorm_2.MoreThan)(new Date())
-            }
-        });
+        const session = await this.repository.findOne({ where: { tokenHash } });
+        if (!session)
+            return null;
+        if (session.revokedAt != null)
+            return null;
+        if (new Date(session.expiresAt) <= new Date())
+            return null;
+        return session;
     }
     async revokeByTokenHash(tokenHash) {
         const result = await this.repository.update({ tokenHash }, { revokedAt: new Date() });

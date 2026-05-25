@@ -28,11 +28,17 @@ class SmartAlertDialog extends StatelessWidget {
       },
       transitionBuilder: (context, animation, secondaryAnimation, child) {
         return BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 2 * animation.value, sigmaY: 2 * animation.value),
+          filter: ImageFilter.blur(
+            sigmaX: 2 * animation.value,
+            sigmaY: 2 * animation.value,
+          ),
           child: FadeTransition(
             opacity: animation,
             child: SlideTransition(
-              position: Tween<Offset>(begin: const Offset(0, 0.1), end: Offset.zero).animate(animation),
+              position: Tween<Offset>(
+                begin: const Offset(0, 0.1),
+                end: Offset.zero,
+              ).animate(animation),
               child: child,
             ),
           ),
@@ -64,7 +70,6 @@ class SmartAlertDialog extends StatelessWidget {
           child: Stack(
             clipBehavior: Clip.none,
             children: [
-              // Amber blur circle top right
               Positioned(
                 top: -48,
                 right: -48,
@@ -143,9 +148,21 @@ class SmartAlertDialog extends StatelessWidget {
                         ),
                         children: [
                           const TextSpan(text: 'Wait, '),
-                          TextSpan(text: 'Bryan! ', style: const TextStyle(fontWeight: FontWeight.bold)),
-                          const TextSpan(text: 'Past data shows you usually regret this type of purchase. '),
-                          TextSpan(text: 'Rethink?', style: TextStyle(color: Colors.teal[800], fontWeight: FontWeight.w600)),
+                          TextSpan(
+                            text: 'Bryan! ',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          const TextSpan(
+                            text:
+                                'Past data shows you usually regret this type of purchase. ',
+                          ),
+                          TextSpan(
+                            text: 'Rethink?',
+                            style: TextStyle(
+                              color: Colors.teal[800],
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -156,7 +173,10 @@ class SmartAlertDialog extends StatelessWidget {
                         SizedBox(
                           width: double.infinity,
                           child: FilledButton(
-                            onPressed: () => Navigator.pop(context, false), // cancel purchase
+                            onPressed: () => Navigator.pop(
+                              context,
+                              false,
+                            ), // cancel purchase
                             style: FilledButton.styleFrom(
                               backgroundColor: Colors.teal[800],
                               foregroundColor: Colors.white,
@@ -165,11 +185,16 @@ class SmartAlertDialog extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(100),
                               ),
                               elevation: 8,
-                              shadowColor: Colors.teal[800]!.withValues(alpha: 0.2),
+                              shadowColor: Colors.teal[800]!.withValues(
+                                alpha: 0.2,
+                              ),
                             ),
                             child: Text(
                               'Stay Committed (Cancel Purchase)',
-                              style: AppTextStyles.headlineSmall.copyWith(fontSize: 14, color: Colors.white),
+                              style: AppTextStyles.headlineSmall.copyWith(
+                                fontSize: 14,
+                                color: Colors.white,
+                              ),
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -178,10 +203,14 @@ class SmartAlertDialog extends StatelessWidget {
                         SizedBox(
                           width: double.infinity,
                           child: OutlinedButton(
-                            onPressed: () => Navigator.pop(context, true), // save anyway
+                            onPressed: () =>
+                                Navigator.pop(context, true), // save anyway
                             style: OutlinedButton.styleFrom(
                               foregroundColor: Colors.teal[800],
-                              side: BorderSide(color: Colors.teal[800]!.withValues(alpha: 0.3), width: 2),
+                              side: BorderSide(
+                                color: Colors.teal[800]!.withValues(alpha: 0.3),
+                                width: 2,
+                              ),
                               padding: const EdgeInsets.symmetric(vertical: 14),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(100),
@@ -189,7 +218,10 @@ class SmartAlertDialog extends StatelessWidget {
                             ),
                             child: Text(
                               'Save Anyway',
-                              style: AppTextStyles.headlineSmall.copyWith(fontSize: 14, color: Colors.teal[800]),
+                              style: AppTextStyles.headlineSmall.copyWith(
+                                fontSize: 14,
+                                color: Colors.teal[800],
+                              ),
                             ),
                           ),
                         ),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Design System: "The Serene Ledger" — extracted from Stitch
 class AppColors {
   AppColors._();
 

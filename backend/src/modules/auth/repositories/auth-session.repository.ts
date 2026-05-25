@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ObjectId } from "mongodb";
-import { IsNull, MoreThan, Repository } from "typeorm";
+import { Repository } from "typeorm";
 import { AuthSession } from "../entities/auth-session.entity";
 import { User } from "../../users/entities/user.entity";
 
@@ -30,13 +30,11 @@ export class AuthSessionRepository {
   }
 
   async findActiveByTokenHash(tokenHash: string): Promise<AuthSession | null> {
-    return await this.repository.findOne({
-      where: {
-        tokenHash,
-        revokedAt: IsNull(),
-        expiresAt: MoreThan(new Date())
-      }
-    });
+    const session = await this.repository.findOne({ where: { tokenHash } });
+    if (!session) return null;
+    if (session.revokedAt != null) return null;
+    if (new Date(session.expiresAt) <= new Date()) return null;
+    return session;
   }
 
   async revokeByTokenHash(tokenHash: string): Promise<boolean> {

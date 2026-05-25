@@ -16,6 +16,10 @@ const users_module_1 = require("./modules/users/users.module");
 const auth_module_1 = require("./modules/auth/auth.module");
 const home_module_1 = require("./modules/home/home.module");
 const profile_module_1 = require("./modules/profile/profile.module");
+const categories_module_1 = require("./modules/categories/categories.module");
+const payment_methods_module_1 = require("./modules/payment-methods/payment-methods.module");
+const transactions_module_1 = require("./modules/transactions/transactions.module");
+const wishlist_module_1 = require("./modules/wishlist/wishlist.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -33,7 +37,11 @@ exports.AppModule = AppModule = __decorate([
             users_module_1.UsersModule,
             auth_module_1.AuthModule,
             home_module_1.HomeModule,
-            profile_module_1.ProfileModule
+            profile_module_1.ProfileModule,
+            categories_module_1.CategoriesModule,
+            payment_methods_module_1.PaymentMethodsModule,
+            transactions_module_1.TransactionsModule,
+            wishlist_module_1.WishlistModule
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService]

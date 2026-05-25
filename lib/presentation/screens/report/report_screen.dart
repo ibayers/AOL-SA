@@ -73,7 +73,6 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error: (e, _) => Center(child: Text('Error: $e')),
                 data: (allTransactions) {
-                  // Filter transactions by selected time range
                   final transactions = allTransactions
                       .where((t) => t.date.isAfter(_filterStart))
                       .toList();
@@ -192,7 +191,6 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
     );
   }
 
-  // --- TIME FILTER PICKER ---
   Widget _buildTimeFilter() {
     return GestureDetector(
       onTap: () {
@@ -302,12 +300,10 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
     );
   }
 
-  // --- SUMMARY TAB ---
   Widget _buildSummaryTab(List<TransactionModel> transactions) {
     final expenses = transactions.where((t) => t.isExpense).toList();
     final totalExpense = expenses.fold(0.0, (sum, t) => sum + t.amount);
 
-    // Category breakdown
     final catMap = <String, double>{};
     for (final t in expenses) {
       final cat = t.categoryName ?? 'Unknown';
@@ -601,7 +597,6 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
     );
   }
 
-  // --- HISTORY TAB ---
   Widget _buildHistoryTab(List<TransactionModel> transactions) {
     if (transactions.isEmpty) {
       return Container(

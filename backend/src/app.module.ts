@@ -7,6 +7,10 @@ import { UsersModule } from "./modules/users/users.module";
 import { AuthModule } from "./modules/auth/auth.module";
 import { HomeModule } from "./modules/home/home.module";
 import { ProfileModule } from "./modules/profile/profile.module";
+import { CategoriesModule } from "./modules/categories/categories.module";
+import { PaymentMethodsModule } from "./modules/payment-methods/payment-methods.module";
+import { TransactionsModule } from "./modules/transactions/transactions.module";
+import { WishlistModule } from "./modules/wishlist/wishlist.module";
 
 @Module({
   imports: [
@@ -21,7 +25,11 @@ import { ProfileModule } from "./modules/profile/profile.module";
     UsersModule,
     AuthModule,
     HomeModule,
-    ProfileModule
+    ProfileModule,
+    CategoriesModule,
+    PaymentMethodsModule,
+    TransactionsModule,
+    WishlistModule
   ],
   controllers: [AppController],
   providers: [AppService]

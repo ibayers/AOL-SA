@@ -61,8 +61,8 @@ class TransactionModel {
     return {
       'amount': amount,
       'type': type,
-      'category_id': categoryId,
-      'payment_method_id': paymentMethodId,
+      'categoryId': categoryId,
+      'paymentMethodId': paymentMethodId,
       'note': note,
       'date': date.toIso8601String(),
       'feeling': feeling,

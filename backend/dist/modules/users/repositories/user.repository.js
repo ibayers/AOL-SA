@@ -27,7 +27,7 @@ let UserRepository = class UserRepository {
         return await this.repository.save(user);
     }
     async findById(id) {
-        return await this.repository.findOne({ where: { id: new mongodb_1.ObjectId(id) } });
+        return await this.repository.findOne({ where: { _id: new mongodb_1.ObjectId(id) } });
     }
     async findByEmail(email) {
         return await this.repository.findOne({ where: { email } });
@@ -36,11 +36,11 @@ let UserRepository = class UserRepository {
         return await this.repository.findAndCount({ skip, take });
     }
     async update(id, updateData) {
-        await this.repository.update({ id: new mongodb_1.ObjectId(id) }, updateData);
+        await this.repository.update({ _id: new mongodb_1.ObjectId(id) }, updateData);
         return await this.findById(id);
     }
     async delete(id) {
-        const result = await this.repository.delete({ id: new mongodb_1.ObjectId(id) });
+        const result = await this.repository.delete({ _id: new mongodb_1.ObjectId(id) });
         return result.affected > 0;
     }
 };
