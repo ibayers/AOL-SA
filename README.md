@@ -72,15 +72,7 @@ BACK-END (NestJS + MongoDB)
   Http Exception Filter — menangkap semua HttpException dan mengembalikan response JSON yang konsisten berisi statusCode, message, dan
   timestamp.
 
-  Crypto Utilities — berisi fungsi-fungsi kriptografi:
-  - hashPassword — hashing password dengan PBKDF2 + SHA-512, 120.000 iterasi, 64-byte key, random 16-byte salt. Disimpan dalam format
-  salt:hash.                                                                                                                             
-  - verifyPassword — membandingkan hash password yang diinput dengan hash di database menggunakan timing-safe comparison.
-  - generateSessionToken — membuat token random 32 bytes dalam format hex (64 karakter).                                                 
-  - hashToken — menghitung SHA-256 hash dari session token untuk disimpan di database.
-
   Konfigurasi
-
   Konfigurasi diatur melalui file .env dengan tiga variabel: PORT (default 3000), NODE_ENV (development), dan MONGODB_URI (connection    
   string MongoDB Atlas). Jika MONGODB_URI tidak diset, aplikasi akan fallback ke mongodb://localhost:27017/moni_db. Session TTL diatur
   melalui AUTH_SESSION_TTL_HOURS dengan default 168 jam (7 hari). 
