@@ -4,7 +4,6 @@ import 'core/theme/app_theme.dart';
 import 'application/providers.dart';
 import 'presentation/app_shell.dart';
 import 'presentation/screens/auth/login_screen.dart';
-import 'core/utils/notification_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,7 +20,6 @@ class SmartMoneyApp extends ConsumerWidget {
     return MaterialApp(
       title: 'Smart Money',
       debugShowCheckedModeBanner: false,
-      navigatorKey: NotificationService.navigatorKey,
       theme: AppTheme.lightTheme,
       home: isLoggedIn ? const AppShell() : const LoginScreen(),
     );
