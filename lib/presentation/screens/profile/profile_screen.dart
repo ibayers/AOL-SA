@@ -7,6 +7,7 @@ import 'package:smart_money/core/theme/app_colors.dart';
 import 'package:smart_money/core/theme/app_text_styles.dart';
 import 'package:smart_money/domain/models/models.dart';
 import 'package:smart_money/presentation/screens/auth/login_screen.dart';
+import 'package:smart_money/core/utils/notification_service.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -38,15 +39,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       await ref.read(profileProvider.notifier).uploadAvatar(file, fileName);
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Profile picture updated!')),
-        );
+        NotificationService.showSuccess('Profile picture updated!');
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Failed to update picture: $e')));
+        NotificationService.showError('Failed to update picture: $e');
       }
     } finally {
       if (mounted) setState(() => _isUploading = false);
@@ -653,7 +650,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       type: selectedType,
                     );
                     await ref.read(categoryListProvider.notifier).add(category);
-                    if (ctx.mounted) Navigator.pop(ctx);
+                    if (ctx.mounted) {
+                      NotificationService.showSuccess('Category added');
+                      Navigator.pop(ctx);
+                    }
                   },
                   child: const Text('Add Category'),
                 ),
@@ -860,7 +860,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   await ref
                       .read(paymentMethodListProvider.notifier)
                       .add(method);
-                  if (ctx.mounted) Navigator.pop(ctx);
+                  if (ctx.mounted) {
+                    NotificationService.showSuccess('Payment method added');
+                    Navigator.pop(ctx);
+                  }
                 },
                 child: const Text('Add Method'),
               ),
