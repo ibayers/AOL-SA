@@ -7,6 +7,7 @@ import 'package:smart_money/core/utils/formatters.dart';
 import 'package:smart_money/domain/models/models.dart';
 import 'package:smart_money/presentation/screens/home/home_screen.dart';
 import 'package:smart_money/presentation/screens/pop_up_notif/notif_screen.dart';
+import 'package:smart_money/core/utils/notification_service.dart';
 
 class AddTransactionScreen extends ConsumerStatefulWidget {
   const AddTransactionScreen({super.key});
@@ -56,14 +57,10 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
       '',
     );
     final amount = double.tryParse(amountText);
-    if (amount == null || amount <= 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Please enter a valid amount'),
-          backgroundColor: AppColors.error,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      if (amount == null || amount <= 0) {
+        NotificationService.showError('Please enter a valid amount');
+        return;
+      }
       return;
     }
 
@@ -109,16 +106,14 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
 
       if (_selectedMethod != null) {
         ref.read(lastUsedPaymentMethodProvider.notifier).set(_selectedMethod);
-      }
+        if (mounted) {
+          NotificationService.showSuccess('Transaction saved');
+          Navigator.pop(context);
+        }
 
-      if (mounted) Navigator.pop(context);
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error: $e'),
-            backgroundColor: AppColors.error,
-            behavior: SnackBarBehavior.floating,
+        if (mounted) {
+          NotificationService.showError('Error: $e');
+        }
           ),
         );
       }
