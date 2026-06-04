@@ -6,11 +6,12 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smart_money/main.dart';
 
 void main() {
   testWidgets('SmartMoneyApp should render', (WidgetTester tester) async {
-    await tester.pumpWidget(const SmartMoneyApp());
+    await tester.pumpWidget(const ProviderScope(child: SmartMoneyApp()));
     expect(find.text('Smart Money'), findsWidgets);
   });
 }
