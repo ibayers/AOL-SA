@@ -1,0 +1,8 @@
+[build]
+buildCommand = "npm run build"
+
+[deploy]
+startCommand = "node dist/main"
+
+[build.variables]
+RAILPACK_INSTALL_CMD = "npm ci --include=dev"
