@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:smart_money/core/utils/notification_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../data/repositories/repository_impl.dart';
 import '../data/datasources/transaction_remote_data_source.dart';
@@ -128,15 +129,25 @@ class TransactionListNotifier extends AsyncNotifier<List<TransactionModel>> {
 
   Future<void> delete(String id) async {
     final repo = ref.read(transactionRepositoryProvider);
-    await repo.deleteTransaction(id);
-    ref.invalidateSelf();
+    try {
+      await repo.deleteTransaction(id);
+      ref.invalidateSelf();
+      NotificationService.showSuccess('Transaction deleted');
+    } catch (e) {
+      NotificationService.showError('Failed to delete transaction: $e');
+    }
     await future;
   }
 
   Future<void> updateTransaction(TransactionModel txn) async {
     final repo = ref.read(transactionRepositoryProvider);
-    await repo.updateTransaction(txn);
-    ref.invalidateSelf();
+    try {
+      await repo.updateTransaction(txn);
+      ref.invalidateSelf();
+      NotificationService.showSuccess('Transaction updated');
+    } catch (e) {
+      NotificationService.showError('Failed to update transaction: $e');
+    }
     await future;
   }
 }
@@ -226,8 +237,13 @@ class WishlistNotifier extends AsyncNotifier<List<WishlistItemModel>> {
 
   Future<void> markAsCompleted(String id) async {
     final repo = ref.read(wishlistRepositoryProvider);
-    await repo.markAsCompleted(id);
-    ref.invalidateSelf();
+    try {
+      await repo.markAsCompleted(id);
+      ref.invalidateSelf();
+      NotificationService.showSuccess('Wishlist item marked as bought');
+    } catch (e) {
+      NotificationService.showError('Failed to mark wishlist item: $e');
+    }
     await future;
   }
 }

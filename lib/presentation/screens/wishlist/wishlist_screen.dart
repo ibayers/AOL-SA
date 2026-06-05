@@ -7,6 +7,7 @@ import 'package:smart_money/core/theme/app_colors.dart';
 import 'package:smart_money/core/theme/app_text_styles.dart';
 import 'package:smart_money/core/utils/formatters.dart';
 import 'package:smart_money/domain/models/models.dart';
+import 'package:smart_money/core/utils/notification_service.dart';
 
 class WishlistScreen extends ConsumerStatefulWidget {
   const WishlistScreen({super.key});
@@ -250,7 +251,10 @@ class _WishlistScreenState extends ConsumerState<WishlistScreen> {
                       imagePath: selectedImagePath,
                     );
                     await ref.read(wishlistProvider.notifier).add(item);
-                    if (ctx.mounted) Navigator.pop(ctx);
+                    if (ctx.mounted) {
+                      NotificationService.showSuccess('Added to wishlist');
+                      Navigator.pop(ctx);
+                    }
                   },
                   child: const Text('Add to Wishlist'),
                 ),
@@ -295,9 +299,7 @@ class _WishlistScreenState extends ConsumerState<WishlistScreen> {
   void _handleBuy(WishlistItemModel item) async {
     await ref.read(wishlistProvider.notifier).markAsCompleted(item.id);
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${item.name} marked as bought!'), behavior: SnackBarBehavior.floating),
-      );
+      NotificationService.showSuccess('${item.name} marked as bought!');
     }
   }
 }
