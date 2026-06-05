@@ -1,9 +1,10 @@
 # 📄 PRODUCT REQUIREMENT DOCUMENT (PRD)
 
 ## Personal Finance Tracker App
+
 ## 1. 📌 Product Overview
 
-**Nama Produk:** Smart Money
+**Nama Produk:** Moni
 **Platform:** Mobile (Android & iOS - Flutter)
 
 ### Deskripsi:
@@ -16,10 +17,10 @@ Aplikasi personal finance tracker untuk membantu pengguna mencatat, mengelola, d
 
 Banyak individu:
 
-* Tidak tahu uang mereka habis ke mana
-* Menggunakan banyak metode pembayaran (cash, e-wallet, bank)
-* Tidak memiliki insight terhadap kebiasaan belanja
-* Kesulitan melacak pengeluaran secara konsisten
+- Tidak tahu uang mereka habis ke mana
+- Menggunakan banyak metode pembayaran (cash, e-wallet, bank)
+- Tidak memiliki insight terhadap kebiasaan belanja
+- Kesulitan melacak pengeluaran secara konsisten
 
 ---
 
@@ -27,11 +28,11 @@ Banyak individu:
 
 Aplikasi yang memungkinkan user:
 
-* Mencatat transaksi dengan cepat
-* Mengelompokkan pengeluaran berdasarkan metode pembayaran
-* Melihat laporan keuangan (report + history)
-* Menyimpan wishlist barang
-* Mendapat insight sederhana dari kebiasaan belanja
+- Mencatat transaksi dengan cepat
+- Mengelompokkan pengeluaran berdasarkan metode pembayaran
+- Melihat laporan keuangan (report + history)
+- Menyimpan wishlist barang
+- Mendapat insight sederhana dari kebiasaan belanja
 
 ---
 
@@ -39,27 +40,27 @@ Aplikasi yang memungkinkan user:
 
 ### Goals:
 
-* Mempermudah pencatatan transaksi harian
-* Memberikan insight keuangan yang berguna
-* Meningkatkan awareness user terhadap pengeluaran
+- Mempermudah pencatatan transaksi harian
+- Memberikan insight keuangan yang berguna
+- Meningkatkan awareness user terhadap pengeluaran
 
 ### Success Metrics:
 
-* ≥ 1 transaksi/hari per user aktif
-* Retention mingguan meningkat
-* ≥ 60% user membuka halaman Report setiap minggu
+- ≥ 1 transaksi/hari per user aktif
+- Retention mingguan meningkat
+- ≥ 60% user membuka halaman Report setiap minggu
 
 ---
 
 ## 5. 👤 Target User
 
-* Mahasiswa / pekerja (18–35 tahun)
-* Aktif menggunakan:
+- Mahasiswa / pekerja (18–35 tahun)
+- Aktif menggunakan:
+  - E-wallet (GoPay, dll)
+  - Cash
+  - Bank
 
-  * E-wallet (GoPay, dll)
-  * Cash
-  * Bank
-* Ingin tracking keuangan tanpa ribet
+- Ingin tracking keuangan tanpa ribet
 
 ---
 
@@ -87,21 +88,20 @@ Menampilkan ringkasan kondisi keuangan user.
 
 ### Fitur:
 
-* Total pengeluaran minggu ini
-* Total pemasukan minggu ini
-* Net balance (income - expense)
-* Breakdown:
+- Total pengeluaran minggu ini
+- Total pemasukan minggu ini
+- Net balance (income - expense)
+- Breakdown:
+  - Berdasarkan metode pembayaran
+  - Berdasarkan kategori
 
-  * Berdasarkan metode pembayaran
-  * Berdasarkan kategori
-* Insight:
-
-  * Pengeluaran terbesar
-  * Kategori paling boros
+- Insight:
+  - Pengeluaran terbesar
+  - Kategori paling boros
 
 ### Optional:
 
-* Mini chart (pie/bar)
+- Mini chart (pie/bar)
 
 ---
 
@@ -113,25 +113,24 @@ Menambahkan transaksi baru.
 
 ### Input Field:
 
-* Nominal (required)
-* Tipe:
+- Nominal (required)
+- Tipe:
+  - Income
+  - Expense
 
-  * Income
-  * Expense
-* Kategori (required)
-* Metode pembayaran (required)
-* Tanggal (default: hari ini)
-* Catatan (optional)
-* Feeling (optional):
-
-  * 😊 Puas
-  * 😐 Biasa
-  * 😢 Menyesal
+- Kategori (required)
+- Metode pembayaran (required)
+- Tanggal (default: hari ini)
+- Catatan (optional)
+- Feeling (optional):
+  - 😊 Puas
+  - 😐 Biasa
+  - 😢 Menyesal
 
 ### Requirement:
 
-* Maksimal 3–4 tap untuk submit
-* UX cepat & sederhana
+- Maksimal 3–4 tap untuk submit
+- UX cepat & sederhana
 
 ---
 
@@ -145,9 +144,9 @@ Menampilkan analisis keuangan sekaligus riwayat transaksi.
 
 ### 🔝 Section 1: Summary
 
-* Total income
-* Total expense
-* Net balance
+- Total income
+- Total expense
+- Net balance
 
 ---
 
@@ -155,26 +154,25 @@ Menampilkan analisis keuangan sekaligus riwayat transaksi.
 
 User dapat memilih:
 
-* Mingguan
-* Bulanan
-* Tahunan
-* (Optional) Custom date
+- Mingguan
+- Bulanan
+- Tahunan
+- (Optional) Custom date
 
 ---
 
 ### 📊 Section 3: Analytics
 
-* Grafik tren pengeluaran
-* Breakdown:
-
-  * Per kategori
-  * Per metode pembayaran
+- Grafik tren pengeluaran
+- Breakdown:
+  - Per kategori
+  - Per metode pembayaran
 
 ### Insight:
 
-* Kategori paling boros
-* Hari paling banyak pengeluaran
-* Rata-rata pengeluaran
+- Kategori paling boros
+- Hari paling banyak pengeluaran
+- Rata-rata pengeluaran
 
 ---
 
@@ -182,28 +180,27 @@ User dapat memilih:
 
 List transaksi:
 
-* Sorted by tanggal
-* Infinite scroll / pagination
+- Sorted by tanggal
+- Infinite scroll / pagination
 
 ### Fitur:
 
-* Search transaksi
-* Filter:
-
-  * Kategori
-  * Metode pembayaran
-  * Tanggal
+- Search transaksi
+- Filter:
+  - Kategori
+  - Metode pembayaran
+  - Tanggal
 
 ### Item:
 
-* Kategori
-* Nominal
-* Metode pembayaran
-* Tanggal
+- Kategori
+- Nominal
+- Metode pembayaran
+- Tanggal
 
 ### Detail:
 
-* Semua field transaksi
+- Semua field transaksi
 
 ---
 
@@ -225,18 +222,17 @@ Daftar barang yang ingin dibeli.
 
 ### Fitur:
 
-* Tambah item:
+- Tambah item:
+  - Nama
+  - Harga target
 
-  * Nama
-  * Harga target
-* Status:
-
-  * Belum beli
-  * Sudah beli
+- Status:
+  - Belum beli
+  - Sudah beli
 
 ### Additional:
 
-* Convert ke transaksi saat dibeli
+- Convert ke transaksi saat dibeli
 
 ---
 
@@ -248,10 +244,10 @@ Pengaturan user.
 
 ### Fitur:
 
-* Nama user
-* Target pengeluaran mingguan
-* Reset data
-* Export data (optional)
+- Nama user
+- Target pengeluaran mingguan
+- Reset data
+- Export data (optional)
 
 ---
 
@@ -259,15 +255,15 @@ Pengaturan user.
 
 ### Fitur:
 
-* Tambah metode pembayaran
-* Edit
-* Hapus
+- Tambah metode pembayaran
+- Edit
+- Hapus
 
 Contoh:
 
-* Cash
-* GoPay
-* Bank
+- Cash
+- GoPay
+- Bank
 
 ---
 
@@ -275,10 +271,10 @@ Contoh:
 
 ### Fitur:
 
-* Tambah kategori
-* Edit
-* Hapus
-* Icon / warna (optional)
+- Tambah kategori
+- Edit
+- Hapus
+- Icon / warna (optional)
 
 ---
 
@@ -286,11 +282,11 @@ Contoh:
 
 ### Fitur:
 
-* Set budget:
+- Set budget:
+  - Mingguan
+  - Bulanan
 
-  * Mingguan
-  * Bulanan
-* Progress penggunaan
+- Progress penggunaan
 
 ---
 
@@ -337,15 +333,14 @@ status
 
 ## 9. ⚙️ Non-Functional Requirements
 
-* App harus:
+- App harus:
+  - Cepat (< 1 detik untuk aksi utama)
+  - Ringan
+  - Offline-first
 
-  * Cepat (< 1 detik untuk aksi utama)
-  * Ringan
-  * Offline-first
-* UI harus:
-
-  * Clean
-  * Mudah digunakan (≤ 3 tap untuk input)
+- UI harus:
+  - Clean
+  - Mudah digunakan (≤ 3 tap untuk input)
 
 ---
 
@@ -353,26 +348,26 @@ status
 
 Fitur wajib:
 
-* Home (basic summary)
-* Add Transaction
-* Report (basic + history)
-* Wishlist
-* Profile
-* Payment Method
-* Category
+- Home (basic summary)
+- Add Transaction
+- Report (basic + history)
+- Wishlist
+- Profile
+- Payment Method
+- Category
 
 ---
 
 ## 11. 🔮 Future Enhancements
 
-* Cloud sync
-* Multi-device support
-* Notifikasi reminder input transaksi
-* AI Insight:
+- Cloud sync
+- Multi-device support
+- Notifikasi reminder input transaksi
+- AI Insight:
+  - Prediksi pengeluaran
 
-  * Prediksi pengeluaran
-* Dark mode
-* Export ke Excel
+- Dark mode
+- Export ke Excel
 
 ---
 
@@ -384,21 +379,21 @@ User malas input transaksi
 
 ### Mitigation:
 
-* UX super cepat
-* Default value otomatis
-* Reminder harian
+- UX super cepat
+- Default value otomatis
+- Reminder harian
 
 ---
 
 ## 13. 🧱 Technical Suggestion
 
-* Framework: Flutter
-* State Management: Riverpod / Provider
-* Database:
+- Framework: Flutter
+- State Management: Riverpod / Provider
+- Database:
+  - Hive (recommended)
+  - SQLite (optional)
 
-  * Hive (recommended)
-  * SQLite (optional)
-* Chart: fl_chart
+- Chart: fl_chart
 
 ---
 
@@ -411,11 +406,10 @@ Aku update bagian **Technical Suggestion** jadi lebih relevan + sekalian kasih s
 
 ## 📱 Frontend
 
-* Framework: Flutter
-* State Management:
-
-  * **Riverpod (recommended)** → scalable & clean
-  * (alternatif: Provider kalau mau simpel)
+- Framework: Flutter
+- State Management:
+  - **Riverpod (recommended)** → scalable & clean
+  - (alternatif: Provider kalau mau simpel)
 
 ---
 
@@ -425,15 +419,15 @@ Aku update bagian **Technical Suggestion** jadi lebih relevan + sekalian kasih s
 
 Menggantikan:
 
-* Hive / SQLite (local DB)
-* Firebase (alternatif)
+- Hive / SQLite (local DB)
+- Firebase (alternatif)
 
 ### Fitur yang dipakai:
 
-* **PostgreSQL Database**
-* **Auth (optional)**
-* **Realtime (optional, future)**
-* **Storage (optional)**
+- **PostgreSQL Database**
+- **Auth (optional)**
+- **Realtime (optional, future)**
+- **Storage (optional)**
 
 ---
 
@@ -507,13 +501,13 @@ created_at
 
 Gunakan Supabase Auth:
 
-* Email & Password
-* atau Google login (future)
+- Email & Password
+- atau Google login (future)
 
 👉 Benefit:
 
-* Data user aman
-* Bisa multi-device
+- Data user aman
+- Bisa multi-device
 
 ---
 
@@ -581,19 +575,20 @@ TransactionRepository
 
 👉 Supaya:
 
-* Clean architecture
-* Mudah testing
-* Bisa ganti backend kalau perlu
+- Clean architecture
+- Mudah testing
+- Bisa ganti backend kalau perlu
 
 ---
 
 ## 📊 Report Processing
+
 ### ✅ Opsi 1
 
 Hitung di Flutter:
 
-* Lebih fleksibel
-* Lebih cepat dev
+- Lebih fleksibel
+- Lebih cepat dev
 
 ## 🌐 Offline Strategy (Penting)
 
@@ -601,10 +596,9 @@ Supabase = online-first, jadi:
 
 ### Solusi:
 
-* Cache data di memory
-* (Optional advanced) pakai local DB:
-
-  * Hive untuk caching
+- Cache data di memory
+- (Optional advanced) pakai local DB:
+  - Hive untuk caching
 
 ---
 
@@ -625,21 +619,19 @@ user_id = auth.uid()
 
 ## 🚀 Deployment
 
-* Supabase: Cloud (langsung)
-* Flutter:
-
-  * Android APK / Play Store
-  * iOS (optional)
+- Supabase: Cloud (langsung)
+- Flutter:
+  - Android APK / Play Store
+  - iOS (optional)
 
 ---
-
 
 # ⚠️ Catatan Penting
 
 Karena app kamu:
 
-* Banyak filter
-* Banyak report
+- Banyak filter
+- Banyak report
 
 👉 **Supabase (PostgreSQL) = pilihan sangat tepat**
 
@@ -647,8 +639,7 @@ Karena app kamu:
 
 # 💡 Saran Arsitektur Final
 
-* Flutter (UI)
-* Riverpod (state)
-* Supabase (backend + DB)
-* Repository pattern
-
+- Flutter (UI)
+- Riverpod (state)
+- Supabase (backend + DB)
+- Repository pattern

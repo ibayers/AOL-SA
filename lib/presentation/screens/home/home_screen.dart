@@ -73,7 +73,7 @@ class HomeScreen extends ConsumerWidget {
     BuildContext context,
     AsyncValue<ProfileModel> profileAsync,
   ) {
-    final fullName = profileAsync.value?.name ?? 'Smart Money';
+    final fullName = profileAsync.value?.name ?? 'Moni';
     final firstName = fullName.split(' ').first;
     final hour = DateTime.now().hour;
     final greeting = hour < 12

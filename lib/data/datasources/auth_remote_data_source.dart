@@ -7,10 +7,10 @@ class AuthRemoteDataSource {
   final Dio _dio = DioClient.instance;
 
   Future<Map<String, dynamic>> login(String email, String password) async {
-    final response = await _dio.post(ApiConfig.login, data: {
-      'email': email,
-      'password': password,
-    });
+    final response = await _dio.post(
+      ApiConfig.login,
+      data: {'email': email.trim().toLowerCase(), 'password': password},
+    );
     final token = response.data['access_token'] as String;
     await AuthInterceptor.saveToken(token);
     return response.data as Map<String, dynamic>;
@@ -21,11 +21,14 @@ class AuthRemoteDataSource {
     String email,
     String password,
   ) async {
-    final response = await _dio.post(ApiConfig.register, data: {
-      'name': name,
-      'email': email,
-      'password': password,
-    });
+    final response = await _dio.post(
+      ApiConfig.register,
+      data: {
+        'name': name,
+        'email': email.trim().toLowerCase(),
+        'password': password,
+      },
+    );
     final token = response.data['access_token'] as String;
     await AuthInterceptor.saveToken(token);
     return response.data as Map<String, dynamic>;

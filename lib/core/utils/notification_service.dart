@@ -4,12 +4,17 @@ import 'package:smart_money/core/theme/app_colors.dart';
 class NotificationService {
   NotificationService._();
 
-  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+  static final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey<NavigatorState>();
 
   static OverlayEntry? _currentEntry;
 
-  static void _showOverlay(String message, Color background, IconData icon,
-      {Duration duration = const Duration(seconds: 3)}) {
+  static void _showOverlay(
+    String message,
+    Color background,
+    IconData icon, {
+    Duration duration = const Duration(seconds: 3),
+  }) {
     final overlay = navigatorKey.currentState?.overlay;
     if (overlay == null) return;
 
@@ -40,13 +45,16 @@ class NotificationService {
                 );
               },
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
                 decoration: BoxDecoration(
                   color: background,
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.12),
+                      color: Colors.black.withValues(alpha: 0.12),
                       blurRadius: 16,
                     ),
                   ],
@@ -59,7 +67,10 @@ class NotificationService {
                     Expanded(
                       child: Text(
                         message,
-                        style: const TextStyle(color: Colors.white, fontSize: 14),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                        ),
                       ),
                     ),
                   ],

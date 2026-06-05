@@ -19,7 +19,7 @@ class SmartMoneyApp extends ConsumerWidget {
     final isLoggedIn = ref.watch(isLoggedInProvider);
 
     return MaterialApp(
-      title: 'Smart Money',
+      title: 'Moni',
       debugShowCheckedModeBanner: false,
       navigatorKey: NotificationService.navigatorKey,
       theme: AppTheme.lightTheme,

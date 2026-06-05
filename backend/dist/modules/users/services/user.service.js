@@ -18,13 +18,17 @@ let UserService = class UserService {
     constructor(userRepository) {
         this.userRepository = userRepository;
     }
+    normalizeEmail(email) {
+        return email.trim().toLowerCase();
+    }
     async create(createUserDto) {
-        const existingUser = await this.userRepository.findByEmail(createUserDto.email);
+        const email = this.normalizeEmail(createUserDto.email);
+        const existingUser = await this.userRepository.findByEmail(email);
         if (existingUser) {
             throw new common_1.BadRequestException("User with this email already exists");
         }
         return await this.userRepository.create({
-            email: createUserDto.email,
+            email,
             name: createUserDto.name,
             passwordHash: (0, crypto_util_1.hashPassword)(createUserDto.password),
             role: createUserDto.role ?? "user",
@@ -49,13 +53,14 @@ let UserService = class UserService {
     async update(id, updateUserDto) {
         const currentUser = await this.findById(id);
         if (updateUserDto.email) {
-            const existingUser = await this.userRepository.findByEmail(updateUserDto.email);
+            const email = this.normalizeEmail(updateUserDto.email);
+            const existingUser = await this.userRepository.findByEmail(email);
             if (existingUser && existingUser.id.toHexString() !== id) {
                 throw new common_1.BadRequestException("Email already in use");
             }
         }
         const updatedUser = await this.userRepository.update(id, {
-            email: updateUserDto.email,
+            email: updateUserDto.email ? this.normalizeEmail(updateUserDto.email) : undefined,
             name: updateUserDto.name,
             passwordHash: updateUserDto.password ? (0, crypto_util_1.hashPassword)(updateUserDto.password) : currentUser.passwordHash,
             role: updateUserDto.role,

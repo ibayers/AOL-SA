@@ -22,7 +22,7 @@ export class UserRepository {
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    return await this.repository.findOne({ where: { email } });
+    return await this.repository.findOne({ where: { email: email.trim().toLowerCase() } });
   }
 
   async findAll(skip: number = 0, take: number = 10): Promise<[User[], number]> {

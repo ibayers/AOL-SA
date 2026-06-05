@@ -12,6 +12,6 @@ import 'package:smart_money/main.dart';
 void main() {
   testWidgets('SmartMoneyApp should render', (WidgetTester tester) async {
     await tester.pumpWidget(const ProviderScope(child: SmartMoneyApp()));
-    expect(find.text('Smart Money'), findsWidgets);
+    expect(find.text('Moni'), findsWidgets);
   });
 }

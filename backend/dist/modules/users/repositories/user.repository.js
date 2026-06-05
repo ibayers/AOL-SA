@@ -30,7 +30,7 @@ let UserRepository = class UserRepository {
         return await this.repository.findOne({ where: { _id: new mongodb_1.ObjectId(id) } });
     }
     async findByEmail(email) {
-        return await this.repository.findOne({ where: { email } });
+        return await this.repository.findOne({ where: { email: email.trim().toLowerCase() } });
     }
     async findAll(skip = 0, take = 10) {
         return await this.repository.findAndCount({ skip, take });
