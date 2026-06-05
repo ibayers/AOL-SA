@@ -5,7 +5,7 @@ import 'package:smart_money/core/theme/app_colors.dart';
 import 'package:smart_money/core/theme/app_text_styles.dart';
 import 'package:smart_money/core/utils/formatters.dart';
 import 'package:smart_money/domain/models/models.dart';
-import 'package:smart_money/presentation/screens/home/home_screen.dart';
+import 'package:smart_money/presentation/app_shell.dart';
 import 'package:smart_money/presentation/screens/pop_up_notif/notif_screen.dart';
 import 'package:smart_money/core/utils/notification_service.dart';
 
@@ -62,13 +62,14 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
       return;
     }
 
-    if (!_isIncome) {
+    if (!_isIncome && _feelingValue == 'regret') {
       final shouldSave = await SmartAlertDialog.show(context);
       if (shouldSave != true) {
         if (!mounted) return;
-        Navigator.pushReplacement(
+        Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
+          MaterialPageRoute(builder: (context) => const AppShell()),
+          (route) => false,
         );
         return;
       }
