@@ -23,15 +23,22 @@ export class AuthService {
     private readonly configService: ConfigService
   ) {}
 
+  private normalizeEmail(email: string): string {
+    return email.trim().toLowerCase();
+  }
+
   async register(createUserDto: CreateUserDto, userAgent?: string | null): Promise<AuthResponse> {
-    const user = await this.userService.create(createUserDto);
+    const user = await this.userService.create({
+      ...createUserDto,
+      email: this.normalizeEmail(createUserDto.email)
+    });
     const session = await this.createSession(user, userAgent);
 
     return this.buildAuthResponse(user, session.token, session.expiresAt);
   }
 
   async login(loginDto: LoginDto, userAgent?: string | null): Promise<AuthResponse> {
-    const user = await this.userService.findByEmail(loginDto.email);
+    const user = await this.userService.findByEmail(this.normalizeEmail(loginDto.email));
     if (!user) {
       throw new UnauthorizedException("Invalid email or password");
     }

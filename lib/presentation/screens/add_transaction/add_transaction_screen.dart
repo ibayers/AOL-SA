@@ -57,22 +57,19 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
       '',
     );
     final amount = double.tryParse(amountText);
-      if (amount == null || amount <= 0) {
-        NotificationService.showError('Please enter a valid amount');
-        return;
-      }
+    if (amount == null || amount <= 0) {
+      NotificationService.showError('Please enter a valid amount');
       return;
     }
 
     if (!_isIncome) {
       final shouldSave = await SmartAlertDialog.show(context);
       if (shouldSave != true) {
-        if (context.mounted) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const HomeScreen()),
-          );
-        }
+        if (!mounted) return;
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
+        );
         return;
       }
     }
@@ -106,16 +103,15 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
 
       if (_selectedMethod != null) {
         ref.read(lastUsedPaymentMethodProvider.notifier).set(_selectedMethod);
-        if (mounted) {
-          NotificationService.showSuccess('Transaction saved');
-          Navigator.pop(context);
-        }
+      }
 
-        if (mounted) {
-          NotificationService.showError('Error: $e');
-        }
-          ),
-        );
+      if (mounted) {
+        NotificationService.showSuccess('Transaction saved');
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      if (mounted) {
+        NotificationService.showError('Error: $e');
       }
     } finally {
       if (mounted) setState(() => _isSaving = false);
@@ -396,7 +392,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: quickAmounts.length + 1,
-        separatorBuilder: (_, __) => const SizedBox(width: 8),
+        separatorBuilder: (_, _) => const SizedBox(width: 8),
         itemBuilder: (ctx, idx) {
           if (idx == quickAmounts.length) {
             return ActionChip(

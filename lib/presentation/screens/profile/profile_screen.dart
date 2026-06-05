@@ -88,7 +88,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           Row(
             children: [
               Text(
-                'Smart Money',
+                'Moni',
                 style: AppTextStyles.headlineMedium.copyWith(
                   color: AppColors.primary,
                   fontSize: 20,
@@ -441,7 +441,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Manage Categories', style: AppTextStyles.headlineSmall),
+                      Text(
+                        'Manage Categories',
+                        style: AppTextStyles.headlineSmall,
+                      ),
                       GestureDetector(
                         onTap: () => _showAddCategoryDialog(context, ref),
                         child: Container(
@@ -481,44 +484,44 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     child: categoriesAsync.isLoading
                         ? const Center(child: CircularProgressIndicator())
                         : categories.isEmpty
-                            ? Center(
-                                child: Text(
-                                  'No categories yet',
-                                  style: AppTextStyles.bodyMedium.copyWith(
-                                    color: AppColors.outline,
-                                  ),
-                                ),
-                              )
-                            : ListView.builder(
-                                controller: scrollController,
-                                itemCount: categories.length,
-                                itemBuilder: (context, index) {
-                                  final cat = categories[index];
-                                  return ListTile(
-                                    leading: Text(
-                                      cat.icon ?? '📂',
-                                      style: const TextStyle(fontSize: 24),
-                                    ),
-                                    title: Text(cat.name),
-                                    subtitle: Text(
-                                      cat.type ?? 'general',
-                                      style: AppTextStyles.labelSmall,
-                                    ),
-                                    trailing: IconButton(
-                                      icon: const Icon(
-                                        Icons.delete_outline_rounded,
-                                        color: AppColors.error,
-                                        size: 20,
-                                      ),
-                                      onPressed: () async {
-                                        await ref
-                                            .read(categoryListProvider.notifier)
-                                            .delete(cat.id);
-                                      },
-                                    ),
-                                  );
-                                },
+                        ? Center(
+                            child: Text(
+                              'No categories yet',
+                              style: AppTextStyles.bodyMedium.copyWith(
+                                color: AppColors.outline,
                               ),
+                            ),
+                          )
+                        : ListView.builder(
+                            controller: scrollController,
+                            itemCount: categories.length,
+                            itemBuilder: (context, index) {
+                              final cat = categories[index];
+                              return ListTile(
+                                leading: Text(
+                                  cat.icon ?? '📂',
+                                  style: const TextStyle(fontSize: 24),
+                                ),
+                                title: Text(cat.name),
+                                subtitle: Text(
+                                  cat.type ?? 'general',
+                                  style: AppTextStyles.labelSmall,
+                                ),
+                                trailing: IconButton(
+                                  icon: const Icon(
+                                    Icons.delete_outline_rounded,
+                                    color: AppColors.error,
+                                    size: 20,
+                                  ),
+                                  onPressed: () async {
+                                    await ref
+                                        .read(categoryListProvider.notifier)
+                                        .delete(cat.id);
+                                  },
+                                ),
+                              );
+                            },
+                          ),
                   ),
                 ],
               ),
@@ -725,7 +728,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Payment Methods', style: AppTextStyles.headlineSmall),
+                      Text(
+                        'Payment Methods',
+                        style: AppTextStyles.headlineSmall,
+                      ),
                       GestureDetector(
                         onTap: () => _showAddPaymentMethodDialog(context, ref),
                         child: Container(
@@ -765,40 +771,42 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     child: methodsAsync.isLoading
                         ? const Center(child: CircularProgressIndicator())
                         : methods.isEmpty
-                            ? Center(
-                                child: Text(
-                                  'No payment methods yet',
-                                  style: AppTextStyles.bodyMedium.copyWith(
-                                    color: AppColors.outline,
-                                  ),
-                                ),
-                              )
-                            : ListView.builder(
-                                controller: scrollController,
-                                itemCount: methods.length,
-                                itemBuilder: (context, index) {
-                                  final method = methods[index];
-                                  return ListTile(
-                                    leading: const Icon(
-                                      Icons.payment_rounded,
-                                      color: AppColors.primary,
-                                    ),
-                                    title: Text(method.name),
-                                    trailing: IconButton(
-                                      icon: const Icon(
-                                        Icons.delete_outline_rounded,
-                                        color: AppColors.error,
-                                        size: 20,
-                                      ),
-                                      onPressed: () async {
-                                        await ref
-                                            .read(paymentMethodListProvider.notifier)
-                                            .delete(method.id);
-                                      },
-                                    ),
-                                  );
-                                },
+                        ? Center(
+                            child: Text(
+                              'No payment methods yet',
+                              style: AppTextStyles.bodyMedium.copyWith(
+                                color: AppColors.outline,
                               ),
+                            ),
+                          )
+                        : ListView.builder(
+                            controller: scrollController,
+                            itemCount: methods.length,
+                            itemBuilder: (context, index) {
+                              final method = methods[index];
+                              return ListTile(
+                                leading: const Icon(
+                                  Icons.payment_rounded,
+                                  color: AppColors.primary,
+                                ),
+                                title: Text(method.name),
+                                trailing: IconButton(
+                                  icon: const Icon(
+                                    Icons.delete_outline_rounded,
+                                    color: AppColors.error,
+                                    size: 20,
+                                  ),
+                                  onPressed: () async {
+                                    await ref
+                                        .read(
+                                          paymentMethodListProvider.notifier,
+                                        )
+                                        .delete(method.id);
+                                  },
+                                ),
+                              );
+                            },
+                          ),
                   ),
                 ],
               ),
@@ -878,7 +886,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     return Column(
       children: [
         Text(
-          'Smart Money v1.0.0',
+          'Moni v1.0.0',
           style: AppTextStyles.bodyMedium.copyWith(
             color: AppColors.outlineVariant,
             fontWeight: FontWeight.w500,

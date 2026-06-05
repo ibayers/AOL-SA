@@ -121,7 +121,7 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
               ),
               const SizedBox(width: 12),
               Text(
-                'Smart Money',
+                'Moni',
                 style: AppTextStyles.headlineMedium.copyWith(
                   color: AppColors.primary,
                   fontSize: 20,

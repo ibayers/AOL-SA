@@ -111,7 +111,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       height: 64,
                       margin: const EdgeInsets.only(bottom: 24),
                       decoration: BoxDecoration(
-                        color: AppColors.primaryContainer,
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
@@ -121,14 +120,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           ),
                         ],
                       ),
-                      child: const Icon(
-                        Icons.account_balance_wallet_rounded,
-                        color: Colors.white,
-                        size: 32,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: Image.asset(
+                          'assets/icon/logo moni.jpeg',
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                     Text(
-                      'Smart Money',
+                      'Moni',
                       style: AppTextStyles.headlineLarge.copyWith(
                         color: AppColors.primary,
                         fontWeight: FontWeight.w800,

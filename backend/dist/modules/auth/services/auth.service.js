@@ -23,13 +23,19 @@ let AuthService = class AuthService {
         this.authSessionRepository = authSessionRepository;
         this.configService = configService;
     }
+    normalizeEmail(email) {
+        return email.trim().toLowerCase();
+    }
     async register(createUserDto, userAgent) {
-        const user = await this.userService.create(createUserDto);
+        const user = await this.userService.create({
+            ...createUserDto,
+            email: this.normalizeEmail(createUserDto.email)
+        });
         const session = await this.createSession(user, userAgent);
         return this.buildAuthResponse(user, session.token, session.expiresAt);
     }
     async login(loginDto, userAgent) {
-        const user = await this.userService.findByEmail(loginDto.email);
+        const user = await this.userService.findByEmail(this.normalizeEmail(loginDto.email));
         if (!user) {
             throw new common_1.UnauthorizedException("Invalid email or password");
         }

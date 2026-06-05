@@ -10,14 +10,19 @@ import { PublicUserProfile, toPublicUserProfile } from "../mappers/user-response
 export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
+  private normalizeEmail(email: string): string {
+    return email.trim().toLowerCase();
+  }
+
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const existingUser = await this.userRepository.findByEmail(createUserDto.email);
+    const email = this.normalizeEmail(createUserDto.email);
+    const existingUser = await this.userRepository.findByEmail(email);
     if (existingUser) {
       throw new BadRequestException("User with this email already exists");
     }
 
     return await this.userRepository.create({
-      email: createUserDto.email,
+      email,
       name: createUserDto.name,
       passwordHash: hashPassword(createUserDto.password),
       role: createUserDto.role ?? "user",
@@ -46,14 +51,15 @@ export class UserService {
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     const currentUser = await this.findById(id);
     if (updateUserDto.email) {
-      const existingUser = await this.userRepository.findByEmail(updateUserDto.email);
+      const email = this.normalizeEmail(updateUserDto.email);
+      const existingUser = await this.userRepository.findByEmail(email);
       if (existingUser && existingUser.id.toHexString() !== id) {
         throw new BadRequestException("Email already in use");
       }
     }
 
     const updatedUser = await this.userRepository.update(id, {
-      email: updateUserDto.email,
+      email: updateUserDto.email ? this.normalizeEmail(updateUserDto.email) : undefined,
       name: updateUserDto.name,
       passwordHash: updateUserDto.password ? hashPassword(updateUserDto.password) : currentUser.passwordHash,
       role: updateUserDto.role,

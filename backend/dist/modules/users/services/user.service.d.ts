@@ -6,6 +6,7 @@ import { PublicUserProfile } from "../mappers/user-response.mapper";
 export declare class UserService {
     private readonly userRepository;
     constructor(userRepository: UserRepository);
+    private normalizeEmail;
     create(createUserDto: CreateUserDto): Promise<User>;
     findById(id: string): Promise<User>;
     findByEmail(email: string): Promise<User | null>;

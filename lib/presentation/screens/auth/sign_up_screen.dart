@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smart_money/application/providers.dart';
@@ -56,11 +57,31 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       }
     } catch (e) {
       if (mounted) {
-        _showError('Registration failed. Email may already be in use.');
+        _showError(_extractErrorMessage(e));
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
+  }
+
+  String _extractErrorMessage(Object error) {
+    if (error is DioException) {
+      final data = error.response?.data;
+      if (data is Map<String, dynamic>) {
+        final message = data['message'];
+        if (message is String && message.trim().isNotEmpty) {
+          return message;
+        }
+        if (message is List && message.isNotEmpty) {
+          final firstMessage = message.first;
+          if (firstMessage is String && firstMessage.trim().isNotEmpty) {
+            return firstMessage;
+          }
+        }
+      }
+    }
+
+    return 'Registration failed. Please check your details and try again.';
   }
 
   void _showError(String message) {
@@ -117,7 +138,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                         width: 40,
                         height: 40,
                         decoration: BoxDecoration(
-                          gradient: AppColors.primaryGradient,
                           borderRadius: BorderRadius.circular(12),
                           boxShadow: [
                             BoxShadow(
@@ -127,15 +147,17 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                             ),
                           ],
                         ),
-                        child: const Icon(
-                          Icons.account_balance_wallet_rounded,
-                          color: Colors.white,
-                          size: 20,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.asset(
+                            'assets/icon/logo moni.jpeg',
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                       const SizedBox(width: 12),
                       Text(
-                        'Smart Money',
+                        'Moni',
                         style: AppTextStyles.headlineMedium.copyWith(
                           color: AppColors.primary,
                           fontWeight: FontWeight.w800,

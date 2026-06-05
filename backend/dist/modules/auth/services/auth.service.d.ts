@@ -16,6 +16,7 @@ export declare class AuthService {
     private readonly authSessionRepository;
     private readonly configService;
     constructor(userService: UserService, authSessionRepository: AuthSessionRepository, configService: ConfigService);
+    private normalizeEmail;
     register(createUserDto: CreateUserDto, userAgent?: string | null): Promise<AuthResponse>;
     login(loginDto: LoginDto, userAgent?: string | null): Promise<AuthResponse>;
     logout(accessToken: string): Promise<{
