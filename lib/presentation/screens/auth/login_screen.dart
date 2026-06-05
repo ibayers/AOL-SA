@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smart_money/application/providers.dart';
@@ -48,7 +49,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         );
       }
     } catch (e) {
-      if (mounted) _showError('Invalid email or password');
+      if (mounted) {
+        String msg = 'Invalid email or password';
+        if (e is DioException) {
+          final data = e.response?.data;
+          if (data is Map<String, dynamic>) {
+            final message = data['message'];
+            if (message is String && message.trim().isNotEmpty) {
+              msg = message;
+            }
+          }
+        }
+        _showError(msg);
+      }
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }

@@ -73,11 +73,15 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           return message;
         }
         if (message is List && message.isNotEmpty) {
-          final firstMessage = message.first;
-          if (firstMessage is String && firstMessage.trim().isNotEmpty) {
-            return firstMessage;
-          }
+          return message.whereType<String>().join(', ');
         }
+      }
+      if (data is String && data.trim().isNotEmpty) {
+        return data;
+      }
+      if (error.type == DioExceptionType.connectionError ||
+          error.type == DioExceptionType.connectionTimeout) {
+        return 'Cannot connect to server. Make sure the backend is running.';
       }
     }
 
