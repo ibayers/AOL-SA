@@ -4,7 +4,7 @@
   "scripts": {
     "start": "nest start",
     "start:dev": "nest start --watch",
-    "build": "npx nest build"
+    "build": "node ./node_modules/typescript/bin/tsc"
   },
   "dependencies": {
     "@nestjs/cli": "^9.0.0",
