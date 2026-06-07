@@ -12,6 +12,11 @@ export class CreateWishlistItemDto {
   price: number;
 
   @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  savedAmount?: number;
+
+  @IsOptional()
   @IsString()
   status?: string;
 

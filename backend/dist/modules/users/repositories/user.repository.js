@@ -36,11 +36,11 @@ let UserRepository = class UserRepository {
         return await this.repository.findAndCount({ skip, take });
     }
     async update(id, updateData) {
-        await this.repository.update({ _id: new mongodb_1.ObjectId(id) }, updateData);
+        await this.repository.update(id, updateData);
         return await this.findById(id);
     }
     async delete(id) {
-        const result = await this.repository.delete({ _id: new mongodb_1.ObjectId(id) });
+        const result = await this.repository.delete(id);
         return result.affected > 0;
     }
 };

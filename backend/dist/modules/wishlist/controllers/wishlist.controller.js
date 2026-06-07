@@ -29,6 +29,7 @@ let WishlistController = class WishlistController {
             user_id: i.userId,
             name: i.name,
             price: i.price,
+            saved_amount: i.savedAmount || 0,
             status: i.status,
             image_path: i.imagePath,
             created_at: i.createdAt?.toISOString(),
@@ -40,6 +41,7 @@ let WishlistController = class WishlistController {
             id: item.id.toHexString(),
             name: item.name,
             price: item.price,
+            saved_amount: item.savedAmount || 0,
             status: item.status,
             image_path: item.imagePath,
         };
@@ -50,6 +52,7 @@ let WishlistController = class WishlistController {
             id: item.id.toHexString(),
             name: item.name,
             price: item.price,
+            saved_amount: item.savedAmount || 0,
             status: item.status,
             image_path: item.imagePath,
         };
@@ -57,6 +60,16 @@ let WishlistController = class WishlistController {
     async markCompleted(id) {
         const item = await this.service.markCompleted(id);
         return { id: item.id.toHexString(), status: item.status };
+    }
+    async invest(id, body) {
+        const item = await this.service.invest(id, body.amount);
+        return {
+            id: item.id.toHexString(),
+            name: item.name,
+            price: item.price,
+            saved_amount: item.savedAmount || 0,
+            status: item.status,
+        };
     }
     async delete(id) {
         return await this.service.delete(id);
@@ -94,6 +107,14 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], WishlistController.prototype, "markCompleted", null);
+__decorate([
+    (0, common_1.Patch)(':id/invest'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], WishlistController.prototype, "invest", null);
 __decorate([
     (0, common_1.Delete)(':id'),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),

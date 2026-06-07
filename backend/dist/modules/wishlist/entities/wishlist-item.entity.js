@@ -32,6 +32,10 @@ __decorate([
     __metadata("design:type", Number)
 ], WishlistItem.prototype, "price", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ type: 'double precision', default: 0 }),
+    __metadata("design:type", Number)
+], WishlistItem.prototype, "savedAmount", void 0);
+__decorate([
     (0, typeorm_1.Column)({ default: 'pending' }),
     __metadata("design:type", String)
 ], WishlistItem.prototype, "status", void 0);

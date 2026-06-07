@@ -10,7 +10,8 @@ import 'package:smart_money/presentation/screens/pop_up_notif/notif_screen.dart'
 import 'package:smart_money/core/utils/notification_service.dart';
 
 class AddTransactionScreen extends ConsumerStatefulWidget {
-  const AddTransactionScreen({super.key});
+  final TransactionModel? transaction;
+  const AddTransactionScreen({super.key, this.transaction});
 
   @override
   ConsumerState<AddTransactionScreen> createState() =>
@@ -31,6 +32,35 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
   void initState() {
     super.initState();
     _selectedMethod = ref.read(lastUsedPaymentMethodProvider);
+
+    final txn = widget.transaction;
+    if (txn != null) {
+      _isIncome = txn.isIncome;
+      _amountController.text = txn.amount.toInt().toString();
+      _noteController.text = txn.note ?? '';
+      _selectedDate = txn.date;
+      _selectedFeeling = txn.feeling == 'happy'
+          ? 0
+          : txn.feeling == 'regret'
+              ? 2
+              : 1;
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final txn = widget.transaction;
+    if (txn != null && _selectedCategory == null) {
+      final categories = ref.read(categoryListProvider).value ?? [];
+      final methods = ref.read(paymentMethodListProvider).value ?? [];
+      _selectedCategory =
+          categories.where((c) => c.id == txn.categoryId).firstOrNull;
+      _selectedMethod =
+          methods.where((m) => m.id == txn.paymentMethodId).firstOrNull ??
+              ref.read(lastUsedPaymentMethodProvider);
+      setState(() {});
+    }
   }
 
   @override
@@ -62,7 +92,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
       return;
     }
 
-    if (!_isIncome && _feelingValue == 'regret') {
+    if (widget.transaction == null && !_isIncome && _feelingValue == 'regret') {
       final shouldSave = await SmartAlertDialog.show(context);
       if (shouldSave != true) {
         if (!mounted) return;
@@ -88,8 +118,9 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
         categoryId = salaryCategory?.id;
       }
 
+      final isEditing = widget.transaction != null;
       final txn = TransactionModel(
-        id: '',
+        id: isEditing ? widget.transaction!.id : '',
         amount: amount,
         type: _isIncome ? 'income' : 'expense',
         categoryId: categoryId,
@@ -100,14 +131,23 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
         date: _selectedDate,
         feeling: _isIncome ? null : _feelingValue,
       );
-      await ref.read(transactionListProvider.notifier).add(txn);
 
-      if (_selectedMethod != null) {
+      if (isEditing) {
+        await ref
+            .read(transactionListProvider.notifier)
+            .updateTransaction(txn);
+      } else {
+        await ref.read(transactionListProvider.notifier).add(txn);
+      }
+
+      if (!isEditing && _selectedMethod != null) {
         ref.read(lastUsedPaymentMethodProvider.notifier).set(_selectedMethod);
       }
 
       if (mounted) {
-        NotificationService.showSuccess('Transaction saved');
+        NotificationService.showSuccess(
+          isEditing ? 'Transaction updated' : 'Transaction saved',
+        );
         Navigator.pop(context);
       }
     } catch (e) {
@@ -180,6 +220,10 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
                       _buildNoteField(),
                       const SizedBox(height: 24),
                       if (!_isIncome) _buildFeelingPicker(),
+                      if (widget.transaction != null) ...[
+                        const SizedBox(height: 24),
+                        _buildDeleteButton(),
+                      ],
                     ],
                   ),
                 ),
@@ -223,7 +267,13 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
                         ),
                       )
                     : const Icon(Icons.check_circle_rounded),
-                label: Text(_isSaving ? 'Saving...' : 'Save Transaction'),
+                label: Text(
+                  _isSaving
+                      ? 'Saving...'
+                      : widget.transaction != null
+                          ? 'Update Transaction'
+                          : 'Save Transaction',
+                ),
                 style: FilledButton.styleFrom(
                   backgroundColor: AppColors.primaryContainer,
                   foregroundColor: AppColors.onPrimaryContainer,
@@ -259,7 +309,9 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
             ),
           ),
           Text(
-            'Add Transaction',
+            widget.transaction != null
+                ? 'Edit Transaction'
+                : 'Add Transaction',
             style: AppTextStyles.headlineMedium.copyWith(
               color: AppColors.primary,
               fontSize: 20,
@@ -982,6 +1034,61 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
                 ),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDeleteButton() {
+    return SizedBox(
+      width: double.infinity,
+      child: OutlinedButton.icon(
+        onPressed: () async {
+          final confirm = await showDialog<bool>(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              title: const Text('Delete Transaction?'),
+              content: const Text(
+                'This action cannot be undone. The transaction will be permanently deleted.',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(ctx, false),
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.pop(ctx, true),
+                  child: const Text(
+                    'Delete',
+                    style: TextStyle(color: Colors.red),
+                  ),
+                ),
+              ],
+            ),
+          );
+          if (confirm != true) return;
+          try {
+            await ref
+                .read(transactionListProvider.notifier)
+                .delete(widget.transaction!.id);
+            if (mounted) Navigator.pop(context);
+          } catch (e) {
+            if (mounted) {
+              NotificationService.showError('Failed to delete: $e');
+            }
+          }
+        },
+        icon: const Icon(Icons.delete_rounded, color: Colors.red),
+        label: const Text(
+          'Delete Transaction',
+          style: TextStyle(color: Colors.red),
+        ),
+        style: OutlinedButton.styleFrom(
+          side: const BorderSide(color: Colors.red),
+          padding: const EdgeInsets.symmetric(vertical: 14),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(100),
           ),
         ),
       ),

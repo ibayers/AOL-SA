@@ -33,7 +33,7 @@ let PaymentMethodRepository = class PaymentMethodRepository {
         return await this.repository.save(entity);
     }
     async delete(id) {
-        const result = await this.repository.delete({ _id: new mongodb_1.ObjectId(id) });
+        const result = await this.repository.delete(id);
         return result.affected > 0;
     }
 };

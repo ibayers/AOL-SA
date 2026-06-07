@@ -125,7 +125,7 @@ class _WishlistScreenState extends ConsumerState<WishlistScreen> {
               ),
               if (item.isPending)
                 GestureDetector(
-                  onTap: () => _handleBuy(item),
+                  onTap: () => _showInvestDialog(item),
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 14,
@@ -134,18 +134,25 @@ class _WishlistScreenState extends ConsumerState<WishlistScreen> {
                     decoration: BoxDecoration(
                       gradient: AppColors.primaryGradient,
                       borderRadius: BorderRadius.circular(100),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primary.withValues(alpha: 0.2),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         const Icon(
-                          Icons.shopping_cart_rounded,
+                          Icons.savings_rounded,
                           color: AppColors.onPrimary,
                           size: 16,
                         ),
                         const SizedBox(width: 6),
                         Text(
-                          'Buy',
+                          'Invest',
                           style: AppTextStyles.labelLarge.copyWith(
                             color: AppColors.onPrimary,
                           ),
@@ -174,7 +181,7 @@ class _WishlistScreenState extends ConsumerState<WishlistScreen> {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        'Bought',
+                        'Goal Reached!',
                         style: AppTextStyles.labelSmall.copyWith(
                           color: AppColors.secondary,
                         ),
@@ -185,6 +192,26 @@ class _WishlistScreenState extends ConsumerState<WishlistScreen> {
             ],
           ),
           const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                '${CurrencyFormatter.format(item.savedAmount)} / ${CurrencyFormatter.format(item.price)}',
+                style: AppTextStyles.labelMedium.copyWith(
+                  color: AppColors.onSurfaceVariant,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              Text(
+                '${(item.progress * 100).toInt()}%',
+                style: AppTextStyles.labelSmall.copyWith(
+                  color: AppColors.primary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
           ClipRRect(
             borderRadius: BorderRadius.circular(4),
             child: LinearProgressIndicator(
@@ -429,6 +456,7 @@ class _WishlistScreenState extends ConsumerState<WishlistScreen> {
                       id: '',
                       name: name,
                       price: price,
+                      savedAmount: 0,
                       status: 'pending',
                       imagePath: selectedImagePath,
                     );
@@ -514,10 +542,112 @@ class _WishlistScreenState extends ConsumerState<WishlistScreen> {
     return image?.path;
   }
 
-  void _handleBuy(WishlistItemModel item) async {
-    await ref.read(wishlistProvider.notifier).markAsCompleted(item.id);
-    if (mounted) {
-      NotificationService.showSuccess('${item.name} marked as bought!');
-    }
+  void _showInvestDialog(WishlistItemModel item) {
+    final controller = TextEditingController();
+    final remaining = item.price - item.savedAmount;
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppColors.surfaceContainerLowest,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) => Padding(
+        padding: EdgeInsets.fromLTRB(
+          24,
+          24,
+          24,
+          24 + MediaQuery.of(ctx).padding.bottom,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceContainer,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'Invest for ${item.name}',
+              style: AppTextStyles.headlineSmall.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Remaining: ${CurrencyFormatter.format(remaining)}',
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: AppColors.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 20),
+            TextField(
+              controller: controller,
+              keyboardType: TextInputType.number,
+              style: AppTextStyles.bodyLarge,
+              decoration: InputDecoration(
+                hintText: 'Enter amount',
+                hintStyle: AppTextStyles.bodyLarge.copyWith(
+                  color: AppColors.outline.withValues(alpha: 0.5),
+                ),
+                prefixText: 'Rp ',
+                prefixStyle: AppTextStyles.bodyLarge.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: AppColors.outlineVariant),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: AppColors.primary, width: 2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton(
+                onPressed: () {
+                  final amount = double.tryParse(
+                    controller.text.replaceAll(RegExp(r'[^0-9.]'), ''),
+                  );
+                  if (amount == null || amount <= 0) {
+                    NotificationService.showError('Enter a valid amount');
+                    return;
+                  }
+                  Navigator.pop(ctx);
+                  ref.read(wishlistProvider.notifier).invest(item.id, amount);
+                },
+                style: FilledButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                ),
+                child: Text(
+                  'Invest',
+                  style: AppTextStyles.titleMedium.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

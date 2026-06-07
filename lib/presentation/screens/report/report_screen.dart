@@ -6,6 +6,7 @@ import 'package:smart_money/core/theme/app_colors.dart';
 import 'package:smart_money/core/theme/app_text_styles.dart';
 import 'package:smart_money/core/utils/formatters.dart';
 import 'package:smart_money/domain/models/models.dart';
+import 'package:smart_money/presentation/screens/add_transaction/add_transaction_screen.dart';
 
 class ReportScreen extends ConsumerStatefulWidget {
   const ReportScreen({super.key});
@@ -887,94 +888,106 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
         ? ' 😢'
         : '';
 
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        children: [
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: isExpense
-                  ? AppColors.secondaryContainer
-                  : const Color(0xFF93f2f2),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Icon(
-              isExpense ? Icons.shopping_bag_rounded : Icons.payments_rounded,
-              color: isExpense ? AppColors.secondary : const Color(0xFF002020),
-              size: 24,
-            ),
+    return InkWell(
+      onTap: () async {
+        await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => AddTransactionScreen(transaction: txn),
           ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        '$category$feelingEmoji',
-                        style: AppTextStyles.titleMedium.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    Text(
-                      amountStr,
-                      style: AppTextStyles.titleMedium.copyWith(
-                        color: isExpense
-                            ? AppColors.tertiary
-                            : AppColors.secondary,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 2,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColors.surfaceContainerHigh,
-                        borderRadius: BorderRadius.circular(100),
-                      ),
-                      child: Text(
-                        method,
-                        style: AppTextStyles.labelSmall.copyWith(
-                          color: AppColors.onSurfaceVariant,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 10,
-                        ),
-                      ),
-                    ),
-                    if (note.isNotEmpty) ...[
-                      const SizedBox(width: 8),
+        );
+        if (mounted) setState(() {});
+      },
+      borderRadius: BorderRadius.circular(16),
+        child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: isExpense
+                    ? AppColors.secondaryContainer
+                    : const Color(0xFF93f2f2),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Icon(
+                isExpense ? Icons.shopping_bag_rounded : Icons.payments_rounded,
+                color: isExpense ? AppColors.secondary : const Color(0xFF002020),
+                size: 24,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
                       Expanded(
                         child: Text(
-                          note,
-                          overflow: TextOverflow.ellipsis,
-                          style: AppTextStyles.bodySmall.copyWith(
-                            color: AppColors.outline,
-                            fontStyle: FontStyle.italic,
-                            fontSize: 11,
+                          '$category$feelingEmoji',
+                          style: AppTextStyles.titleMedium.copyWith(
+                            fontWeight: FontWeight.w600,
                           ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      Text(
+                        amountStr,
+                        style: AppTextStyles.titleMedium.copyWith(
+                          color: isExpense
+                              ? AppColors.tertiary
+                              : AppColors.secondary,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ],
-                  ],
-                ),
-              ],
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.surfaceContainerHigh,
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                        child: Text(
+                          method,
+                          style: AppTextStyles.labelSmall.copyWith(
+                            color: AppColors.onSurfaceVariant,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 10,
+                          ),
+                        ),
+                      ),
+                      if (note.isNotEmpty) ...[
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            note,
+                            overflow: TextOverflow.ellipsis,
+                            style: AppTextStyles.bodySmall.copyWith(
+                              color: AppColors.outline,
+                              fontStyle: FontStyle.italic,
+                              fontSize: 11,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

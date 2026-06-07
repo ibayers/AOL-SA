@@ -20,6 +20,7 @@ export class WishlistController {
       user_id: i.userId,
       name: i.name,
       price: i.price,
+      saved_amount: i.savedAmount || 0,
       status: i.status,
       image_path: i.imagePath,
       created_at: i.createdAt?.toISOString(),
@@ -34,6 +35,7 @@ export class WishlistController {
       id: item.id.toHexString(),
       name: item.name,
       price: item.price,
+      saved_amount: item.savedAmount || 0,
       status: item.status,
       image_path: item.imagePath,
     };
@@ -46,6 +48,7 @@ export class WishlistController {
       id: item.id.toHexString(),
       name: item.name,
       price: item.price,
+      saved_amount: item.savedAmount || 0,
       status: item.status,
       image_path: item.imagePath,
     };
@@ -55,6 +58,21 @@ export class WishlistController {
   async markCompleted(@Param('id') id: string) {
     const item = await this.service.markCompleted(id);
     return { id: item.id.toHexString(), status: item.status };
+  }
+
+  @Patch(':id/invest')
+  async invest(
+    @Param('id') id: string,
+    @Body() body: { amount: number },
+  ) {
+    const item = await this.service.invest(id, body.amount);
+    return {
+      id: item.id.toHexString(),
+      name: item.name,
+      price: item.price,
+      saved_amount: item.savedAmount || 0,
+      status: item.status,
+    };
   }
 
   @Delete(':id')

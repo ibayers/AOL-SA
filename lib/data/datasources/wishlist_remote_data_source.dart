@@ -37,4 +37,11 @@ class WishlistRemoteDataSource {
     final response = await _dio.patch('${ApiConfig.wishlist}/$id/complete');
     return WishlistItemModel.fromJson(response.data as Map<String, dynamic>);
   }
+
+  Future<void> invest(String id, double amount) async {
+    await _dio.patch(
+      '${ApiConfig.wishlist}/$id/invest',
+      data: {'amount': amount},
+    );
+  }
 }

@@ -140,6 +140,11 @@ class WishlistRepositoryImpl implements WishlistRepository {
   Future<void> markAsCompleted(String id) {
     return _dataSource.markCompleted(id).then((_) {});
   }
+
+  @override
+  Future<void> invest(String id, double amount) async {
+    await _dataSource.invest(id, amount);
+  }
 }
 
 class ProfileRepositoryImpl implements ProfileRepository {

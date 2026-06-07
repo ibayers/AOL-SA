@@ -7,6 +7,7 @@ export declare class WishlistService {
     create(userId: string, dto: CreateWishlistItemDto): Promise<import("../entities/wishlist-item.entity").WishlistItem>;
     update(id: string, dto: CreateWishlistItemDto): Promise<import("../entities/wishlist-item.entity").WishlistItem>;
     markCompleted(id: string): Promise<import("../entities/wishlist-item.entity").WishlistItem>;
+    invest(id: string, amount: number): Promise<import("../entities/wishlist-item.entity").WishlistItem>;
     delete(id: string): Promise<{
         message: string;
     }>;

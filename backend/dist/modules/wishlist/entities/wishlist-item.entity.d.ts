@@ -4,6 +4,7 @@ export declare class WishlistItem {
     userId: string;
     name: string;
     price: number;
+    savedAmount: number;
     status: string;
     imagePath: string;
     createdAt: Date;

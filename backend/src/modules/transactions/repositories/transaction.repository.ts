@@ -31,12 +31,12 @@ export class TransactionRepository {
   }
 
   async update(id: string, data: Partial<Transaction>): Promise<Transaction> {
-    await this.repository.update({ _id: new ObjectId(id) } as any, data);
+    await this.repository.update(id as any, data);
     return await this.findById(id);
   }
 
   async delete(id: string): Promise<boolean> {
-    const result = await this.repository.delete({ _id: new ObjectId(id) } as any);
+    const result = await this.repository.delete(id as any);
     return result.affected > 0;
   }
 }

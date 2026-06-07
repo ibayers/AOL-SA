@@ -15,6 +15,9 @@ export class WishlistItem {
   @Column({ type: 'double precision' })
   price: number;
 
+  @Column({ type: 'double precision', default: 0 })
+  savedAmount: number;
+
   @Column({ default: 'pending' })
   status: string;
 

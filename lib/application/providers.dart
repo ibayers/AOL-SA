@@ -246,6 +246,18 @@ class WishlistNotifier extends AsyncNotifier<List<WishlistItemModel>> {
     }
     await future;
   }
+
+  Future<void> invest(String id, double amount) async {
+    final repo = ref.read(wishlistRepositoryProvider);
+    try {
+      await repo.invest(id, amount);
+      ref.invalidateSelf();
+      NotificationService.showSuccess('Investment added to goal!');
+    } catch (e) {
+      NotificationService.showError('Failed to invest: $e');
+    }
+    await future;
+  }
 }
 
 final profileProvider = AsyncNotifierProvider<ProfileNotifier, ProfileModel>(

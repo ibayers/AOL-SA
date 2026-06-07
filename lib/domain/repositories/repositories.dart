@@ -29,6 +29,7 @@ abstract class WishlistRepository {
   Future<void> updateWishlistItem(WishlistItemModel item);
   Future<void> deleteWishlistItem(String id);
   Future<void> markAsCompleted(String id);
+  Future<void> invest(String id, double amount);
 }
 
 abstract class ProfileRepository {

@@ -139,6 +139,7 @@ class WishlistItemModel {
   final String userId;
   final String name;
   final double price;
+  final double savedAmount;
   final String status;
   final String? imagePath;
   final DateTime? createdAt;
@@ -148,6 +149,7 @@ class WishlistItemModel {
     this.userId = '',
     required this.name,
     required this.price,
+    this.savedAmount = 0,
     required this.status,
     this.imagePath,
     this.createdAt,
@@ -156,7 +158,8 @@ class WishlistItemModel {
   bool get isPending => status == 'pending';
   bool get isCompleted => status == 'completed';
   bool get hasImage => imagePath != null && imagePath!.isNotEmpty;
-  double get progress => isCompleted ? 1.0 : 0.0;
+  double get progress =>
+      price > 0 ? (savedAmount / price).clamp(0.0, 1.0) : 0.0;
 
   factory WishlistItemModel.fromJson(Map<String, dynamic> json) {
     return WishlistItemModel(
@@ -164,6 +167,7 @@ class WishlistItemModel {
       userId: json['user_id'] as String? ?? '',
       name: json['name'] as String,
       price: (json['price'] as num).toDouble(),
+      savedAmount: (json['saved_amount'] ?? 0).toDouble(),
       status: json['status'] as String,
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'] as String)

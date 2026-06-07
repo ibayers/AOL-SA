@@ -28,6 +28,12 @@ __decorate([
 ], CreateWishlistItemDto.prototype, "price", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
+    (0, class_transformer_1.Type)(() => Number),
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], CreateWishlistItemDto.prototype, "savedAmount", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateWishlistItemDto.prototype, "status", void 0);

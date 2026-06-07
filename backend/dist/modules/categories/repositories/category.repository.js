@@ -33,11 +33,11 @@ let CategoryRepository = class CategoryRepository {
         return await this.repository.save(entity);
     }
     async update(id, data) {
-        await this.repository.update({ _id: new mongodb_1.ObjectId(id) }, data);
+        await this.repository.update(id, data);
         return await this.findById(id);
     }
     async delete(id) {
-        const result = await this.repository.delete({ _id: new mongodb_1.ObjectId(id) });
+        const result = await this.repository.delete(id);
         return result.affected > 0;
     }
 };

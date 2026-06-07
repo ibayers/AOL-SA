@@ -8,6 +8,7 @@ export declare class WishlistController {
         user_id: string;
         name: string;
         price: number;
+        saved_amount: number;
         status: string;
         image_path: string;
         created_at: string;
@@ -16,6 +17,7 @@ export declare class WishlistController {
         id: string;
         name: string;
         price: number;
+        saved_amount: number;
         status: string;
         image_path: string;
     }>;
@@ -23,11 +25,21 @@ export declare class WishlistController {
         id: string;
         name: string;
         price: number;
+        saved_amount: number;
         status: string;
         image_path: string;
     }>;
     markCompleted(id: string): Promise<{
         id: string;
+        status: string;
+    }>;
+    invest(id: string, body: {
+        amount: number;
+    }): Promise<{
+        id: string;
+        name: string;
+        price: number;
+        saved_amount: number;
         status: string;
     }>;
     delete(id: string): Promise<{

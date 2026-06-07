@@ -45,6 +45,16 @@ let WishlistService = class WishlistService {
             throw new common_1.NotFoundException('Wishlist item not found');
         return await this.repo.update(id, { status: 'completed' });
     }
+    async invest(id, amount) {
+        const item = await this.repo.findById(id);
+        if (!item)
+            throw new common_1.NotFoundException('Wishlist item not found');
+        const newSavedAmount = (item.savedAmount || 0) + amount;
+        return await this.repo.update(id, {
+            savedAmount: newSavedAmount,
+            status: newSavedAmount >= item.price ? 'completed' : 'pending',
+        });
+    }
     async delete(id) {
         const result = await this.repo.delete(id);
         if (!result)
